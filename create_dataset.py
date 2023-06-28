@@ -4,7 +4,7 @@ import numpy as np
 import time, os
 
 # action for ML
-actions = ['what']
+actions = ['none', 'move', 'Lclick', 'Rclick', 'doubleclick']
 seq_length = 30
 secs_for_action = 30
 
@@ -12,7 +12,7 @@ secs_for_action = 30
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 hands = mp_hands.Hands(
-    max_num_hands=2,
+    max_num_hands=1,
     min_detection_confidence=0.5,
     min_tracking_confidence=0.5)
 

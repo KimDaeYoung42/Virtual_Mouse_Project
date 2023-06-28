@@ -13,12 +13,14 @@ from tensorflow.keras.models import load_model
 os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'true'
 
-actions = ['move', 'click', 'doubleclick']
+actions = ['none', 'move', 'Lclick', 'Rclick', 'doubleclick']
 
 data = np.concatenate([
-    np.load('dataset/seq_move_1687831081.npy'),
-    np.load('dataset/seq_click_1687831081.npy'),
-    np.load('dataset/seq_doubleclick_1687831081.npy')
+    np.load('dataset/seq_none_1687952222.npy'),
+    np.load('dataset/seq_move_1687952222.npy'),
+    np.load('dataset/seq_Lclick_1687952222.npy'),
+    np.load('dataset/seq_Rclick_1687952222.npy'),
+    np.load('dataset/seq_doubleclick_1687952222.npy')
 ], axis=0)
 
 # print(data.shape)
@@ -54,7 +56,7 @@ history = model.fit(
     x_train,
     y_train,
     validation_data=(x_val, y_val),
-    epochs=250,
+    epochs=200,
     callbacks=[
         ModelCheckpoint('models/model.h5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
         ReduceLROnPlateau(monitor='val_acc', factor=0.5, patience=50, verbose=1, mode='auto')

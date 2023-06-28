@@ -3,8 +3,9 @@ import mediapipe as mp
 import numpy as np
 from tensorflow.keras.models import load_model
 import autopy
+import time
 
-actions = ['move', 'click', 'doubleclick']
+actions = ['none', 'move', 'Lclick', 'Rclick', 'doubleclick']
 seq_length = 30
 
 model = load_model('models/model.h5')
@@ -13,11 +14,15 @@ screen_size = autopy.screen.size()
 # print(screen_size)       1920, 1080
 screen_size_x, screen_size_y = autopy.screen.size()
 
+is_Lclicked = True
+is_RClicked = True
+is_DoubleClicked = True
+
 # MediaPipe hands model
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 hands = mp_hands.Hands(
-    max_num_hands=2,
+    max_num_hands=1,
     min_detection_confidence=0.5,
     min_tracking_confidence=0.5)
 
@@ -40,6 +45,7 @@ while cap.isOpened():
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     result = hands.process(img)
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    img_height, img_width, _ = img.shape
 
     if result.multi_hand_landmarks is not None:
         for res in result.multi_hand_landmarks:
@@ -87,14 +93,20 @@ while cap.isOpened():
                 continue
 
             this_action = '?'
-            if action_seq[-1] == action_seq[-2]:
+
+            # action이 3개 연속일 때
+            if action_seq[-1] == action_seq[-2] == action_seq[-3]:
                 this_action = action
 
             cv2.putText(img, f'{this_action.upper()}', org=(int(res.landmark[0].x * img.shape[1]), int(res.landmark[0].y * img.shape[0] + 20)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
 
-
             # 손의 위치를 추적해 마우스 커서의 위치를 바꾼다
-            if action == 'move':
+            if this_action == 'move':
+
+                is_Lclicked = True
+                is_RClicked = True
+                is_DoubleClicked = True
+
                 # 손목의 위치 가져오기
                 x =  joint[0][0]
                 y =  joint[0][1]
@@ -110,13 +122,47 @@ while cap.isOpened():
                 
                 autopy.mouse.move(normalized_x, normalized_y)
             
-            if action == 'click':
-                autopy.mouse.click()
-                action = 'move'
-                continue
+            # 마우스 좌클릭
+            if this_action == 'Lclick' and is_Lclicked == True:
+                current_time = time.time()
+                is_RClicked = True
+                is_DoubleClicked = True
 
+                autopy.mouse.click()
+                is_Lclicked = False
+
+                # 좌클릭 2초 지속시 프레스 상태로 전환
+                if current_time == 2.0:
+                    this_action = 'press'
+                    autopy.mouse.is_pressed(autopy.mouse.Button.LEFT)
+                    # move가 가능해 져서 드래그 및 드래그 앤 드롭 기능
+                    for act in this_action == 'press':
+                        autopy.mouse.move(normalized_x, normalized_y)
+                    
+                
+
+            # 마우스 우클릭
+            if this_action == 'Rclick' and is_RClicked == True:
+
+                is_Lclicked = True
+                is_DoubleClicked = True
+
+                autopy.mouse.click(button=autopy.mouse.Button.RIGHT)
+                is_RClicked = False
+                
 
             
+            # L버튼 더블클릭
+            if this_action =='doubleclick' and is_DoubleClicked == True:
+
+                is_Lclicked = True
+                is_RClicked = True
+
+                autopy.mouse.click()
+                autopy.mouse.click()
+                is_DoubleClicked = False
+                
+
 
     # out.write(img0)
     # out2.write(img)
