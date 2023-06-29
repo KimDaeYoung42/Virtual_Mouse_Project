@@ -138,7 +138,7 @@ while cap.isOpened():
             if this_action == 'Lclick' and elapse_time >= 2:
                 autopy.mouse.toggle(autopy.mouse.Button.LEFT, down=True)
                 
-                while index_middle_distance < 5:
+                if index_middle_distance < 5:
                     x = joint[9][0]
                     y = joint[9][1]
 
@@ -153,11 +153,12 @@ while cap.isOpened():
                 
                     autopy.mouse.move(normalized_x, normalized_y)
 
-                    if index_middle_distance > 5:
-                        autopy.mouse.toggle(autopy.mouse.Button.LEFT, down=False)
-                        break
+                    # 검지와 중지 사이의 거리가 벌어지면 토글 종료
+                if index_middle_distance > 5:
+                    autopy.mouse.toggle(autopy.mouse.Button.LEFT, down=False)
+                    
 
-                elapse_time = 0
+            
 
             # 마우스 우클릭
             if this_action == 'Rclick' and is_RClicked == True:
