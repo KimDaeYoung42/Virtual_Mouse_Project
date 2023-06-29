@@ -14,9 +14,13 @@ screen_size = autopy.screen.size()
 # print(screen_size)       1920, 1080
 screen_size_x, screen_size_y = autopy.screen.size()
 
+# only one click
 is_Lclicked = True
 is_RClicked = True
 is_DoubleClicked = True
+
+# timer
+start_time = 0
 
 # MediaPipe hands model
 mp_hands = mp.solutions.hands
@@ -28,18 +32,11 @@ hands = mp_hands.Hands(
 
 cap = cv2.VideoCapture(0)
 
-# w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-# h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-# fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
-# out = cv2.VideoWriter('input.mp4', fourcc, cap.get(cv2.CAP_PROP_FPS), (w, h))
-# out2 = cv2.VideoWriter('output.mp4', fourcc, cap.get(cv2.CAP_PROP_FPS), (w, h))
-
 seq = []
 action_seq = []
 
 while cap.isOpened():
     ret, img = cap.read()
-    img0 = img.copy()
 
     img = cv2.flip(img, 1)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -92,6 +89,9 @@ while cap.isOpened():
             if len(action_seq) < 3:
                 continue
 
+            index_middle_distance = abs(joint[12][0] - joint[8][0]) * 100
+            # print(index_middle_distance)
+
             this_action = '?'
 
             # action이 3개 연속일 때
@@ -108,8 +108,8 @@ while cap.isOpened():
                 is_DoubleClicked = True
 
                 # 손목의 위치 가져오기
-                x =  joint[0][0]
-                y =  joint[0][1]
+                x =  joint[9][0]
+                y =  joint[9][1]
 
                 # 마우스 커서 이동
                 normalized_x = screen_size_x * x
@@ -124,22 +124,40 @@ while cap.isOpened():
             
             # 마우스 좌클릭
             if this_action == 'Lclick' and is_Lclicked == True:
-                current_time = time.time()
+                start_time = time.time()
                 is_RClicked = True
                 is_DoubleClicked = True
 
                 autopy.mouse.click()
+
                 is_Lclicked = False
 
-                # 좌클릭 2초 지속시 프레스 상태로 전환
-                if current_time == 2.0:
-                    this_action = 'press'
-                    autopy.mouse.is_pressed(autopy.mouse.Button.LEFT)
-                    # move가 가능해 져서 드래그 및 드래그 앤 드롭 기능
-                    for act in this_action == 'press':
-                        autopy.mouse.move(normalized_x, normalized_y)
-                    
+            elapse_time = time.time() - start_time
+
+            # 좌클릭 2초 지속시 드래그
+            if this_action == 'Lclick' and elapse_time >= 2:
+                autopy.mouse.toggle(autopy.mouse.Button.LEFT, down=True)
                 
+                while index_middle_distance < 5:
+                    x = joint[9][0]
+                    y = joint[9][1]
+
+                    # 마우스 커서 이동
+                    normalized_x = screen_size_x * x
+                    normalized_y = screen_size_y * y
+
+                    if normalized_x > screen_size_x:
+                        continue
+                    elif normalized_y > screen_size_y:
+                        continue
+                
+                    autopy.mouse.move(normalized_x, normalized_y)
+
+                    if index_middle_distance > 5:
+                        autopy.mouse.toggle(autopy.mouse.Button.LEFT, down=False)
+                        break
+
+                elapse_time = 0
 
             # 마우스 우클릭
             if this_action == 'Rclick' and is_RClicked == True:
@@ -149,8 +167,6 @@ while cap.isOpened():
 
                 autopy.mouse.click(button=autopy.mouse.Button.RIGHT)
                 is_RClicked = False
-                
-
             
             # L버튼 더블클릭
             if this_action =='doubleclick' and is_DoubleClicked == True:
@@ -159,13 +175,10 @@ while cap.isOpened():
                 is_RClicked = True
 
                 autopy.mouse.click()
+                time.sleep(0.1)
                 autopy.mouse.click()
                 is_DoubleClicked = False
-                
 
-
-    # out.write(img0)
-    # out2.write(img)
     cv2.imshow('img', img)
     if cv2.waitKey(1) == ord('q'):
         break
