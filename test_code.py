@@ -2,7 +2,7 @@ import cv2
 import mediapipe as mp
 import numpy as np
 from tensorflow.keras.models import load_model
-import autopy
+import pyautogui
 import time
 
 actions = ['none', 'move', 'Lclick', 'Rclick', 'doubleclick']
@@ -10,14 +10,14 @@ seq_length = 30
 
 model = load_model('models/model.h5')
 
-screen_size = autopy.screen.size()
+screen_size = pyautogui.size()
 # print(screen_size)       1920, 1080
-screen_size_x, screen_size_y = autopy.screen.size()
+screen_size_x, screen_size_y = pyautogui.size()
 
 # only one click
-is_Lclicked = True
-is_RClicked = True
-is_DoubleClicked = True
+is_Lclicked = False
+is_RClicked = False
+is_DoubleClicked = False
 
 # timer
 start_time = 0
@@ -27,8 +27,8 @@ mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 hands = mp_hands.Hands(
     max_num_hands=1,
-    min_detection_confidence=0.5,
-    min_tracking_confidence=0.5)
+    min_detection_confidence=0.4,
+    min_tracking_confidence=0.4)
 
 cap = cv2.VideoCapture(0)
 
@@ -100,6 +100,11 @@ while cap.isOpened():
 
             cv2.putText(img, f'{this_action.upper()}', org=(int(res.landmark[0].x * img.shape[1]), int(res.landmark[0].y * img.shape[0] + 20)), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(255, 255, 255), thickness=2)
 
+            if this_action == 'none':
+                is_Lclicked = False
+                is_RClicked = False
+                is_DoubleClicked = False
+
             # 손의 위치를 추적해 마우스 커서의 위치를 바꾼다
             if this_action == 'move':
 
@@ -120,7 +125,7 @@ while cap.isOpened():
                 elif normalized_y > screen_size_y:
                     continue
                 
-                autopy.mouse.move(normalized_x, normalized_y)
+                pyautogui.moveTo(normalized_x, normalized_y)
             
             # 마우스 좌클릭
             if this_action == 'Lclick' and is_Lclicked == True:
@@ -128,7 +133,7 @@ while cap.isOpened():
                 is_RClicked = True
                 is_DoubleClicked = True
 
-                autopy.mouse.click()
+                pyautogui.click()
 
                 is_Lclicked = False
 
@@ -136,7 +141,7 @@ while cap.isOpened():
 
             # 좌클릭 2초 지속시 드래그
             if this_action == 'Lclick' and elapse_time >= 2:
-                autopy.mouse.toggle(autopy.mouse.Button.LEFT, down=True)
+                pyautogui.mouseDown(button='left')
                 
                 if index_middle_distance < 5:
                     x = joint[9][0]
@@ -151,14 +156,11 @@ while cap.isOpened():
                     elif normalized_y > screen_size_y:
                         continue
                 
-                    autopy.mouse.move(normalized_x, normalized_y)
+                    pyautogui.moveTo(normalized_x, normalized_y)
 
                     # 검지와 중지 사이의 거리가 벌어지면 토글 종료
                 if index_middle_distance > 5:
-                    autopy.mouse.toggle(autopy.mouse.Button.LEFT, down=False)
-                    
-
-            
+                    pyautogui.mouseUp(button='left')
 
             # 마우스 우클릭
             if this_action == 'Rclick' and is_RClicked == True:
@@ -166,7 +168,7 @@ while cap.isOpened():
                 is_Lclicked = True
                 is_DoubleClicked = True
 
-                autopy.mouse.click(button=autopy.mouse.Button.RIGHT)
+                pyautogui.click(button='right')
                 is_RClicked = False
             
             # L버튼 더블클릭
@@ -175,9 +177,7 @@ while cap.isOpened():
                 is_Lclicked = True
                 is_RClicked = True
 
-                autopy.mouse.click()
-                time.sleep(0.1)
-                autopy.mouse.click()
+                pyautogui.click(clicks=2)
                 is_DoubleClicked = False
 
     cv2.imshow('img', img)
