@@ -1,0 +1,25 @@
+
+* 프로젝트 공통
+1. 파이참 사용
+
+2. 파이썬 3.7.9 버전 사용
+
+3. OpenCV-python 4.5.1.48 버전 사용 
+
+4. Mediapipe 0.8.3.1 / 0.8.7 버전 사용 
+
+5. cvzone 1.4.1 버전 사용
+
+6. protobuf 3.20.x 버전 이하 사용 
+
+7. PyQt5 최신 버전 사용 
+
+------------------------------------------
+PyQt  사용?  (프론트엔드 UI 프레임워크)  
+
+uM3G@GiO9^UuVGESraxAPcp3
+
+---------------------------------------------
+
+cd C:\Users\user\Desktop\Code\UI_Pyqt\venv\Lib\site-packages\QtDesigner 
+
