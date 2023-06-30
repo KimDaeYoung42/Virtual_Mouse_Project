@@ -73,32 +73,49 @@ class WebcamWindow(QMainWindow):
             lm_list, _ = self.hand_detector.find_positions(frame)
 
             ################################ 핸드 모션 기준 추가하는 곳
-            # 마우스 이동 기능 추가
+
+            ################################
+            # 각 손가락의 상태 ( True==펴짐, False==안펴짐)
+            thumb_state = False     # 엄지
+            index_state = False     # 검지
+            middle_state = False    # 중지
+            ring_state = False      # 약지
+            pinky_state = False     # 소지
+
+            if lm_list[4][1] > lm_list[3][1]:
+                if lm_list[3][1] > lm_list[2][1]:
+                    if lm_list[2][1] > lm_list[1][1]:
+                        thumb_state = True
+            
+            if lm_list[8][1] > lm_list[7][1]:
+                if lm_list[7][1] > lm_list[6][1]:
+                    if lm_list[6][1] > lm_list[5][1]:
+                        index_state = True
+            
+            if lm_list[12][1] > lm_list[11][1]:
+                if lm_list[11][1] > lm_list[10][1]:
+                    if lm_list[10][1] > lm_list[9][1]:
+                        middle_state = True
+
+            if lm_list[16][1] > lm_list[15][1]:
+                if lm_list[15][1] > lm_list[14][1]:
+                    if lm_list[14][1] > lm_list[13][1]:
+                        ring_state = True
+            
+            if lm_list[20][1] > lm_list[19][1]:
+                if lm_list[19][1] > lm_list[18][1]:
+                    if lm_list[18][1] > lm_list[17][1]:
+                        pinky_state = True
+            ################################
+
             if lm_list:
+                
                 # 마우스 커서 이동
-                cursor_x = int(lm_list[8][1] * screen_size_x / 620) # x좌표 스케일링
-                cursor_y = int(lm_list[8][2] * screen_size_y / 360) # y좌표 스케일링
-                cursor_x = min(screen_size_x, max(0, cursor_x))     # x좌표 제한
-                cursor_y = min(screen_size_y, max(0, cursor_y))     # y좌표 제한
-                cursor = QCursor()
-                # QCursor.setPos(cursor_x, cursor_y)
-                self.cursor().setPos(cursor_x, cursor_y)
+                if thumb_state and index_state and middle_state and ring_state and pinky_state:
+                    self.mouse_MoveEvent(lm_list)
+                
 
-                print(cursor_x, cursor_y)
-                thumb_tip = lm_list[4]
-                index_tip = lm_list[8]
-                distance = math.sqrt((thumb_tip[1] - index_tip[1]) ** 2 + (thumb_tip[2] - index_tip[2]) ** 2)
-
-                # 마우스 행동 해제 - 손가락 거리 조건
-                # distance 조건 잘못됨! (수정 필요!) #################################
-                if distance < 30:
-                    self.active_stop = True
-                else:
-                    self.active_stop = False
-
-                # 좌클릭 동작 수행 - 손가락 거리 조건
-                if distance < 30:
-                    pyautogui.click()
+                
 
 
 
@@ -120,12 +137,12 @@ class WebcamWindow(QMainWindow):
     ### 마우스 기능 파트 (MouseModule.py에서 핸들 주고받아옴) ###
     # 마우스 기능 분기 적용 필요함! (단, 행동 해제 이벤트는 상위 이벤트임 )
     # 마우스 이동 이밴트
-    def mouse_MoveEvent(self, event):
-        MouseFunction.handle_mouse_move(self, event)
+    def mouse_MoveEvent(self, lm_list):
+        MouseFunction.handle_mouse_move(self, lm_list)
 
     # 마우스 좌클릭 이벤트
-    def mouse_Left_PressEvent(self, event):
-        MouseFunction.handle_left_mouse_press(self, event)
+    def mouse_Left_PressEvent(self, lm_list):
+        MouseFunction.handle_left_mouse_press(self, lm_list)
 
     # 마우스 우클릭 이벤트
     # 마우스 ?클릭 이벤트
