@@ -3,13 +3,12 @@ import math
 from PyQt5.QtCore import Qt, QEvent
 from PyQt5.QtGui import QCursor
 
-import autopy
 import pyautogui
 from HandTrackingModule import HandDetector
 
 class MouseFunction:
     def __init__(self):
-        self.screen_size = autopy.screen.size()
+        self.screen_size = pyautogui.size()
         self.screen_size_x, self.screen_size_y = self.screen_size
 
     active_stop = False # 임시
@@ -19,10 +18,10 @@ class MouseFunction:
     def handle_mouse_move(self, event):
         if MouseFunction.active_stop:
             return
-
-        cursor_pos = event.pos()
-        cursor_x = cursor_pos.x()
-        cursor_y = cursor_pos.y()
+        
+        # cursor_pos = event.pos()
+        cursor_x = event[9][0]
+        cursor_y = event[9][1]
         cursor_x = min(self.screen_size_x - 1, max(0, cursor_x))  # x좌표 제한
         cursor_y = min(self.screen_size_y - 1, max(0, cursor_y))  # y좌표 제한
         cursor = QCursor()
