@@ -12,6 +12,7 @@ from MouseModule import MouseFunction
 
 import autopy
 import pyautogui
+import subprocess
 
 #################
 # 화면 크기 설정
