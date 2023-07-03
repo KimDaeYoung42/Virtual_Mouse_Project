@@ -16,15 +16,16 @@ class MouseFunction:
 
 
     # 마우스 이동 이밴트 처리
-    def handle_mouse_move(self, event):
+    def handle_mouse_move(self, event, screen_size):
         if MouseFunction.active_stop:
             return
 
-        cursor_pos = event.pos()
-        cursor_x = cursor_pos.x()
-        cursor_y = cursor_pos.y()
-        cursor_x = min(self.screen_size_x - 1, max(0, cursor_x))  # x좌표 제한
-        cursor_y = min(self.screen_size_y - 1, max(0, cursor_y))  # y좌표 제한
+        size_x, size_y = screen_size
+        # cursor_pos = event.pos()
+        cursor_x = int(event[9][1] * size_x / 620)          # x좌표 스케일링
+        cursor_y = int(event[9][2] * size_y / 360)          # y좌표 스케일링
+        cursor_x = min(size_x - 1, max(0, cursor_x))        # x좌표 제한
+        cursor_y = min(size_y - 1, max(0, cursor_y))        # y좌표 제한
         cursor = QCursor()
         # QCursor.setPos(cursor_x, cursor_y)
         self.cursor().setPos(cursor_x, cursor_y)
@@ -32,26 +33,12 @@ class MouseFunction:
     # 마우스 좌클릭 이벤트 처리 - 기능 추가 필요!
     def handle_left_mouse_press(self, event):
         self.text_view.append('마우스 좌클릭 이벤트 감지')
-        if MouseFunction.active_stop:
-            return
+        # if MouseFunction.active_stop:
+        #    return
 
-        if event.button() == Qt.LeftButton:
-            ret, frame = self.cap.read()
-            if ret:
-                frame = cv2.flip(frame, 1)
-                frame = self.hand_detector.find_hands(frame)
-                lm_list, _ = self.hand_detector.find_positions(frame)
+        pyautogui.click()  # 파일 선택 혹은 웹 브라우저 창 선택 등의 동작 수행
 
-                if lm_list:
-                    # 검지와 중지 좌표 가져오기
-                    thumb_tip = lm_list[4]
-                    index_tip = lm_list[8]
-                    # 검지와 중지의 거리 계산
-                    distance = math.sqrt((thumb_tip[1] - index_tip[1]) ** 2 + (thumb_tip[2] - index_tip[2]) ** 2)
 
-            # 일정 거리 이하로 접근했을 때 좌클릭 이벤트 발생
-            if distance < 30:
-                pyautogui.click()  # 파일 선택 혹은 웹 브라우저 창 선택 등의 동작 수행
 
     # 마우스 스크롤 이벤트 처리 - 기능 추가 필요!
     def handle_mouse_scroll(self, event):
