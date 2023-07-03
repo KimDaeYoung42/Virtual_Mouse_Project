@@ -14,6 +14,7 @@ import autopy
 import pyautogui
 
 #################
+# 화면 크기 설정
 screen_size = autopy.screen.size()                  # print(screen_size) 1920, 1080 <- 모니터 1대만 사용시 기준
 screen_size_x, screen_size_y = screen_size
 #################
@@ -30,6 +31,7 @@ class WebcamWindow(QMainWindow):
         # 버튼 클릭 이벤트 연결
         self.Button_WebCam_Start.clicked.connect(self.start_webcam)
         self.Button_WebCam_Stop.clicked.connect(self.stop_webcam)
+        self.Button_Exit.clicked.connect(self.stop_program)
 
         self.is_running = False  # 웹캠 실행 여부 flag
 
@@ -57,9 +59,15 @@ class WebcamWindow(QMainWindow):
             self.cap.release()
             self.cap = None
         self.timer.stop()
-        self.label.clear()
+        # self.label.clear() <-- 종료
 
         self.is_running = False         # 웹캠 실행 플래그를 False로 설정
+
+    def stop_program(self):
+        self.text_view.append('프로그램이 종료됩니다')
+        self.label.clear()
+
+        self.is_running = False  # 웹캠 실행 플래그를 False로 설정
 
     def update_frame(self):
         if not self.is_running:  # 웹캠 실행 플래그가 False이면 프레임 업데이트 중지
@@ -68,7 +76,6 @@ class WebcamWindow(QMainWindow):
         ret, frame = self.cap.read()  # 웹캠 프레임 읽기
         if ret:
             frame = cv2.flip(frame, 1)  # 웹캠 좌우 반전
-
             frame = self.hand_detector.find_hands(frame)
             lm_list, _ = self.hand_detector.find_positions(frame)
 
@@ -106,15 +113,17 @@ class WebcamWindow(QMainWindow):
                     if lm_list[19][2] < lm_list[18][2]:
                         if lm_list[18][2] < lm_list[17][2]:
                             pinky_state = True
-                ################################
+
                 print(thumb_state, index_state, middle_state, ring_state, pinky_state)      # 손가락 펴짐상태 출력
 
-                # 일반 행동 해제 (손 모양이 주먹일 경우)
+                ################################
+
+                # 일반 행동 해제 (손 모양이 주먹일 경우) <- 오류 있음
                 if not (thumb_state or index_state or middle_state or ring_state or pinky_state):
-                    self.active_stop = True
+                    self.active_stop()
                     print("행동 정지")
 
-                # 마우스 커서 이동 (모든 손가락이 펴진 상태인 True일때) 
+                # 마우스 커서 이동 (모든 손가락이 펴진 상태인 True일때)
                 if thumb_state and index_state and middle_state and ring_state and pinky_state:
                     self.mouse_MoveEvent(event=lm_list, screen_size=pyautogui.size())
 
@@ -124,11 +133,7 @@ class WebcamWindow(QMainWindow):
                 distance_Left = math.sqrt((thumb_tip[1] - index_tip[1]) ** 2 + (thumb_tip[2] - index_tip[2]) ** 2)
 
                 if distance_Left < 30:
-                    self.mouse_Left_PressEvent()
-
-
-
-
+                    self.mouse_Left_ClickEvent()
 
             # 프레임 화면에 출력
             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # BGR을 RGB로 변환
@@ -140,34 +145,47 @@ class WebcamWindow(QMainWindow):
 
     ## 공통 기능 ##
     # 행동 해제 이벤트
-    # def active_stop(self, event):
-    #    # self.text_view.append('행동 해제 이벤트 감지')
-    #    self.active_stop = event
+    def active_stop(self):
+        self.text_view.append('행동 해제 이벤트 감지')
 
     ### 마우스 기능 파트 (MouseModule.py에서 핸들 주고받아옴) ###
     # 마우스 기능 분기 적용 필요함! (단, 행동 해제 이벤트는 상위 이벤트임 )
-    # 마우스 이동 이밴트
+    # 1. 마우스 이동 이밴트
     def mouse_MoveEvent(self, event, screen_size):
         MouseFunction.handle_mouse_move(self, event, screen_size)
 
-    # 마우스 좌클릭 이벤트
-    def mouse_Left_PressEvent(self, event):
-        MouseFunction.handle_left_mouse_press(self, event)
+    # 2. 마우스 좌클릭 관련
+    # 2.1 마우스 좌클릭 이벤트 (1번 좌클릭 / 좌 프레스(계속 누르는) )
+    def mouse_Left_ClickEvent(self):
+        MouseFunction.handle_left_mouse_click(self)
 
-    # 마우스 우클릭 이벤트
-    # 마우스 ?클릭 이벤트
+    # 2.2 마우스 좌 더블클릭 이벤트 (2번 좌클릭)
 
-    # 마우스 스크롤 이벤트
+    # 2.3 마우스 좌클릭 후 드래그 이벤트
+
+    # 2.4 마우스 좌클릭 후 끌어서 놓기 이벤트 (파일 이동 / 클릭 앤 무브)
+
+    # 3. 마우스 우클릭 관련
+    # 3.1 마우스 우클릭 이벤트 (1번 우클릭 / 우 프레스 (계속 누르는) )
+
+    # 4. 마우스 스크롤 관련
+    # 4.1 마우스 스크롤 클릭 이벤트
+
+    # 4.2 마우스 스크롤 이벤트
     def mouse_scroll_event(self, event):
         MouseFunction.handle_mouse_scroll(self, event)
 
-    # 화면 확대 동작 수행
+    # 4.2.1 화면 스크롤 - 확대 동작 수행
     def mouse_zoom_in(self, event):
         MouseFunction.handle_mouse_zoom_in(self, event)
 
-    # 화면 축소 동작 수행
+    # 4.2.2 화면 스크롤 - 축소 동작 수행
     def mouse_zoom_out(self, event):
         MouseFunction.handle_mouse_zoom_out(self, event)
+
+    ### 키보드 기능 파트 (MouseModule.py에서 핸들 주고받아옴) ###
+
+
 
     # 프로그램 종료 이벤트
     def closeEvent(self, event):

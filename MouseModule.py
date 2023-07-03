@@ -12,10 +12,9 @@ class MouseFunction:
         self.screen_size = autopy.screen.size()
         self.screen_size_x, self.screen_size_y = self.screen_size
 
-    active_stop = False # 임시
+    active_stop = False  # 임시
 
-
-    # 마우스 이동 이밴트 처리
+    # 1. 마우스 이동 이밴트 처리
     def handle_mouse_move(self, event, screen_size):
         if MouseFunction.active_stop:
             return
@@ -30,17 +29,53 @@ class MouseFunction:
         # QCursor.setPos(cursor_x, cursor_y)
         self.cursor().setPos(cursor_x, cursor_y)
 
-    # 마우스 좌클릭 이벤트 처리 - 기능 추가 필요!
-    def handle_left_mouse_press(self, event):
+    # 2. 마우스 좌클릭 관련
+    # 2.1 마우스 좌클릭 이벤트 (1번 좌클릭 / 좌 프레스(계속 누르는) )
+    def handle_left_mouse_click(self):
         self.text_view.append('마우스 좌클릭 이벤트 감지')
         # if MouseFunction.active_stop:
         #    return
 
+        # 클릭 이벤트 다수 입력 방지 - 시간초 제한?
         pyautogui.click()  # 파일 선택 혹은 웹 브라우저 창 선택 등의 동작 수행
 
+    # 2.2 마우스 좌 더블클릭 이벤트 (2번 좌클릭)
+    def handle_left_mouse_doubleclick(self):
+        self.text_view.append('마우스 좌 더블클릭 이벤트 감지')
+        # if MouseFunction.active_stop:
+        #    return
+
+        pyautogui.doubleClick()
+
+    # 2.3 마우스 좌클릭 후 드래그 이벤트
+    def handle_left_mouse_drag(self):
+        self.text_view.append('마우스 좌클릭 후 드래그 이벤트 감지')
+        # if MouseFunction.active_stop:
+        #    return
+
+        pyautogui.mouseDown()       # 좌클릭 이벤트 발생
+        pyautogui.dragTo()          # 드래그 이벤트
+        pyautogui.mouseUp()         # 클릭 해제 이벤트
 
 
-    # 마우스 스크롤 이벤트 처리 - 기능 추가 필요!
+    # 2.4 마우스 좌클릭 후 끌어서 놓기 이벤트 (파일 이동 / 클릭 앤 무브 )
+    def handle_left_mouse_dragandmove(self):
+        self.text_view.append('마우스 좌클릭 후 드래그 이벤트 감지')
+        # if MouseFunction.active_stop:
+        #    return
+
+        pyautogui.mouseDown()               # 클릭 이벤트 발생
+        pyautogui.moveTo()                  # 드래그 시작 위치로 이동
+        pyautogui.dragTo(duration=1)        # 드래그 동작 수행
+        pyautogui.mouseUp()                 # 클릭 해제 이벤트
+
+    # 3. 마우스 우클릭 관련
+    # 3.1 마우스 우클릭 이벤트 (1번 우클릭 / 우 프레스 (계속 누르는) )
+
+    # 4. 마우스 스크롤 관련
+    # 4.1 마우스 스크롤 클릭 이벤트
+
+    # 4.2 마우스 스크롤 이벤트 처리 - 기능 추가 필요!
     def handle_mouse_scroll(self, event):
         self.text_view.append('마우스 스크롤 이벤트 감지')
         if MouseFunction.active_stop:
@@ -52,7 +87,7 @@ class MouseFunction:
         elif delta < 0:
             self.zoom_out()
 
-    # 화면 확대 동작 수행 - 기능 추가 필요!
+    # 4.2.1 화면 스크롤 - 확대 동작 수행 - 기능 추가 필요!
     def handle_mouse_zoom_in(self, event):
         self.text_view.append('마우스 확대 이벤트 감지')
         if MouseFunction.active_stop:
@@ -62,7 +97,7 @@ class MouseFunction:
         current_height = self.Webcam_label.height()
         self.Webcam_label.resize(current_width + 10, current_height + 10)
 
-    # 화면 축소 동작 수행 - 기능 추가 필요!
+    # 4.2.2 화면 스크롤 - 축소 동작 수행 - 기능 추가 필요!
     def handle_mouse_zoom_out(self, event):
         self.text_view.append('마우스 축소 이벤트 감지')
         if MouseFunction.active_stop:
@@ -71,17 +106,6 @@ class MouseFunction:
         current_width = self.Webcam_label.width()
         current_height = self.Webcam_label.height()
         self.Webcam_label.resize(current_width + 10, current_height + 10)
-
-
-    # 윈도우 창 이동 (드래그 앤 무브) - 기능 추가 필요!
-    def handle_mouse_move_window(self, event):
-        self.text_view.append('마우스 드래그 앤 무브 이벤트 감지')
-        if MouseFunction.active_stop:
-            return
-        # 윈도우 창 이동 코드 작성 필요
-        # ㅇㅇ
-
-
 
 
 
