@@ -127,6 +127,10 @@ class WebcamWindow(QMainWindow):
                 if thumb_state and index_state and middle_state and ring_state and pinky_state:
                     self.mouse_MoveEvent(event=lm_list, screen_size=pyautogui.size())
 
+                # 화상키보드 켜기 (새끼손가락만)
+                if not (thumb_state and index_state and middle_state and ring_state) and pinky_state:
+                    self.keyboard_on_Event()
+
                 # 마우스 좌클릭 조건
                 thumb_tip = lm_list[4]
                 index_tip = lm_list[8]
@@ -182,6 +186,11 @@ class WebcamWindow(QMainWindow):
     # 4.2.2 화면 스크롤 - 축소 동작 수행
     def mouse_zoom_out(self, event):
         MouseFunction.handle_mouse_zoom_out(self, event)
+
+    # 윈도우 화상키보드 ON
+    def keyboard_on_Event(self):
+        subprocess.Popen('osk.exe', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
 
     ### 키보드 기능 파트 (MouseModule.py에서 핸들 주고받아옴) ###
 
