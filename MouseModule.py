@@ -7,50 +7,74 @@ import pyautogui
 from HandTrackingModule import HandDetector
 
 class MouseFunction:
-    def __init__(self):
-        self.screen_size = pyautogui.size()
-        self.screen_size_x, self.screen_size_y = self.screen_size
+    # def __init__(self):
+
 
     active_stop = False # 임시
 
 
     # 마우스 이동 이밴트 처리
-    def handle_mouse_move(self, event):
+    def handle_mouse_move(self, event, screen_size):
         if MouseFunction.active_stop:
             return
+
         
+        size_x, size_y = screen_size
         # cursor_pos = event.pos()
-        cursor_x = event[9][0]
-        cursor_y = event[9][1]
-        cursor_x = min(self.screen_size_x - 1, max(0, cursor_x))  # x좌표 제한
-        cursor_y = min(self.screen_size_y - 1, max(0, cursor_y))  # y좌표 제한
+        cursor_x = int(event[9][1] * size_x / 620)  # x좌표 스케일링
+        cursor_y = int(event[9][2] * size_y / 360)  # y좌표 스케일링
+        cursor_x = min(size_x - 1, max(0, cursor_x))  # x좌표 제한
+        cursor_y = min(size_y - 1, max(0, cursor_y))  # y좌표 제한
         cursor = QCursor()
         # QCursor.setPos(cursor_x, cursor_y)
         self.cursor().setPos(cursor_x, cursor_y)
 
     # 마우스 좌클릭 이벤트 처리 - 기능 추가 필요!
-    def handle_left_mouse_press(self, event):
+    def handle_left_mouse_click(self):
         self.text_view.append('마우스 좌클릭 이벤트 감지')
-        if MouseFunction.active_stop:
+        if self.active_stop:
             return
+        
+        pyautogui.click()  # 파일 선택 혹은 웹 브라우저 창 선택 등의 동작 수행
 
-        if event.button() == Qt.LeftButton:
-            ret, frame = self.cap.read()
-            if ret:
-                frame = cv2.flip(frame, 1)
-                frame = self.hand_detector.find_hands(frame)
-                lm_list, _ = self.hand_detector.find_positions(frame)
+    # 드래그 동작 -- 좌클릭 - L버튼 토글 다운 - Move - 토글 up
+    def handle_mouse_press(self):
+        self.text_view.append('마우스 드래그 시작')
+        if self.active_stop:
+            return
+        
+        pyautogui.mouseDown(button='left')
+        
+    def handle_mouse_up(self):
+        self.text_view.append('마우스 드래그 종료')
+        if self.active_stop:
+            return
+        
+        pyautogui.mouseUp(button='left')
+    
+    # 마우스 우클릭 이벤트 처리
+    def handle_right_mouse_click(self):
+        self.text_view.append('마우스 우클릭 이벤트 감지')
+        if self.active_stop:
+            return
+        
+        pyautogui.rightClick()
 
-                if lm_list:
-                    # 검지와 중지 좌표 가져오기
-                    thumb_tip = lm_list[4]
-                    index_tip = lm_list[8]
-                    # 검지와 중지의 거리 계산
-                    distance = math.sqrt((thumb_tip[1] - index_tip[1]) ** 2 + (thumb_tip[2] - index_tip[2]) ** 2)
+    # 마우스 더블클릭 이벤트 처리
+    def handle_double_mouse_click(self):
+        self.text_view.append('마우스 더블클릭 이벤트 감지')
+        if self.active_stop:
+            return
+        
+        pyautogui.click(clicks=2)
 
-            # 일정 거리 이하로 접근했을 때 좌클릭 이벤트 발생
-            if distance < 30:
-                pyautogui.click()  # 파일 선택 혹은 웹 브라우저 창 선택 등의 동작 수행
+    # 마우스 스크롤 클릭 이벤트
+    def handle_mouse_scroll_press(self):
+        self.text_view.append('마우스 스크롤 이벤트 감지')
+        if self.active_stop:
+            return
+        
+        pyautogui.middleClick()
 
     # 마우스 스크롤 이벤트 처리 - 기능 추가 필요!
     def handle_mouse_scroll(self, event):
@@ -90,12 +114,12 @@ class MouseFunction:
         self.text_view.append('마우스 드래그 앤 무브 이벤트 감지')
         if MouseFunction.active_stop:
             return
-        # 윈도우 창 이동 코드 작성 필요
-        # ㅇㅇ
+        
+        # 윈도우 창 이동 -- 포커스 중인 윈도우의 핸들을 얻어서 손가락 랜드마크 위치로 옮긴다?
 
+        # 마우스 좌클릭 + 마우스 L버튼 토글 다운 + Move의 연속동작
+        # 혹은 윈도우의 위치를 특정 좌표(손가락 랜드마크)로 reset하는 형식
 
+    # 윈도우 창 크기 확대 및 축소 - 기능 추가 필요
 
-
-
-
-
+    # 키보드 사용을 위한 화상 키보드 실행 제스쳐 - 기능 추가 필요

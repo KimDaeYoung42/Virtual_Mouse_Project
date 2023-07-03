@@ -11,11 +11,23 @@ from HandTrackingModule import HandDetector
 from MouseModule import MouseFunction
 
 import pyautogui
-
+import time
 
 
 class WebcamWindow(QMainWindow):
+
+
     def __init__(self):
+        # timer
+        self.start_time = 0
+        self.elapse_time = 0
+
+        # only one click
+        self.is_LClicked = False
+        self.is_RClicked = False
+        self.is_MClicked = False
+        self.is_DoubleClicked = False
+        
         #################
         # screen_size = pyautogui.size()      # print(screen_size)       1920, 1080
         screen_size_x, screen_size_y = pyautogui.size()
@@ -38,6 +50,8 @@ class WebcamWindow(QMainWindow):
 
         # 마우스 스크롤 이벤트 연결 (추후 UI 내에서 스크롤 동작 기능)
         # self.Webcam_label.wheelEvent = self.zoom_event
+    
+
 
     def start_webcam(self):
         self.text_view.append('웹캠이 실행됩니다')
@@ -90,32 +104,42 @@ class WebcamWindow(QMainWindow):
                 pinky_state = lm_list[20][2] < lm_list[19][2] < lm_list[18][2] < lm_list[17][2]
                 ################################
                 print(thumb_state, index_state, middle_state, ring_state, pinky_state)
-                # 마우스 커서 이동 - 모든 손가락이 펴짐
-                if thumb_state and index_state and middle_state and ring_state and pinky_state:
-                    self.mouse_MoveEvent(event=lm_list)
-                    # cursor_x = int(lm_list[9][1] * screen_size_x / 620)  # x좌표 스케일링
-                    # cursor_y = int(lm_list[9][2] * screen_size_y / 360)  # y좌표 스케일링
-                    # cursor_x = min(screen_size_x, max(0, cursor_x))  # x좌표 제한
-                    # cursor_y = min(screen_size_y, max(0, cursor_y))  # y좌표 제한
-                    # cursor = QCursor()
-                    # self.cursor().setPos(cursor_x, cursor_y)
 
                 thumb_tip = lm_list[4]
                 index_tip = lm_list[8]
-                distance = math.sqrt((thumb_tip[1] - index_tip[1]) ** 2 + (thumb_tip[2] - index_tip[2]) ** 2)
-                # print(lm_list)
+                middle_tip = lm_list[12]
+                ring_tip = lm_list[16]
+                pinky_tip = lm_list[20]
 
-                # 
+                thumb_index_distance = math.sqrt((thumb_tip[1] - index_tip[1]) ** 2 + (thumb_tip[2] - index_tip[2]) ** 2)
+                # print(thumb_index_distance)
 
-                # # 마우스 행동 해제 - 손가락 거리 조건
-                # if distance < 30:
-                #     self.active_stop = True
-                # else:
-                #     self.active_stop = False
+                # 조건에 따라 마우스 기능 모듈을 호출 - 랜드마크 ( lm_list )
+                # 마우스 커서 이동 - 모든 손가락이 펴짐
+                if thumb_state and index_state and middle_state and ring_state and pinky_state:
+                    self.mouse_MoveEvent(event=lm_list, screen_size=pyautogui.size())
+                    self.is_LClicked = True
+                    self.is_MClicked = True
+                    self.is_RClicked = True
+                    self.is_MClicked = True
 
-                # # 좌클릭 동작 수행 - 손가락 거리 조건
-                # if distance < 30:
-                #     pyautogui.click()
+                # 마우스 행동 해제 
+
+
+                # 좌클릭 동작 수행 - 손가락 거리 조건
+                if thumb_index_distance < 30 and self.is_LClicked:
+                    self.start_time = time.time()
+                    self.mouse_Left_PressEvent()
+                    self.is_LClicked = False
+                    
+                elapse_time = time.time() - self.start_time
+
+                if elapse_time > 1 and thumb_index_distance < 30:
+                    self.mouse_Left_down()
+                    if thumb_index_distance < 30:
+                        self.mouse_MoveEvent(event=lm_list, screen_size=pyautogui.size())
+                    if thumb_index_distance > 30:
+                        self.mouse_Left_up()
 
             # 프레임 화면에 출력
             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # BGR을 RGB로 변환
@@ -134,27 +158,39 @@ class WebcamWindow(QMainWindow):
     ### 마우스 기능 파트 (MouseModule.py에서 핸들 주고받아옴) ###
     # 마우스 기능 분기 적용 필요함! (단, 행동 해제 이벤트는 상위 이벤트임 )
     # 마우스 이동 이밴트
-    def mouse_MoveEvent(self, event):
-        MouseFunction.handle_mouse_move(self, event)
+    def mouse_MoveEvent(self, event, screen_size):
+        MouseFunction.handle_mouse_move(self, event, screen_size)
 
     # 마우스 좌클릭 이벤트
-    def mouse_Left_PressEvent(self, event):
-        MouseFunction.handle_left_mouse_press(self, event)
+    def mouse_Left_PressEvent(self):
+        MouseFunction.handle_left_mouse_click(self)
+
+    # 좌클릭 Drag를 위한 연속동작 down 이벤트
+    def mouse_Left_down(self):
+        MouseFunction.handle_mouse_press(self)
+
+    def mouse_Left_up(self):
+        MouseFunction.handle_mouse_up(self)
 
     # 마우스 우클릭 이벤트
-    # 마우스 ?클릭 이벤트
+    def mouse_Right_PressEvent(self):
+        MouseFunction.handle_right_mouse_click(self)
+
+    # 마우스 더블클릭 이벤트
+    def mouse_Double_PressEvent(self):
+        MouseFunction.handle_double_mouse_click(self)
 
     # 마우스 스크롤 이벤트
     def mouse_scroll_event(self, event):
         MouseFunction.handle_mouse_scroll(self, event)
 
     # 화면 확대 동작 수행
-    def mouse_zoom_in(self, event):
-        MouseFunction.handle_mouse_zoom_in(self, event)
+    # def mouse_zoom_in(self, event):
+    #     MouseFunction.handle_mouse_zoom_in(self, event)
 
     # 화면 축소 동작 수행
-    def mouse_zoom_out(self, event):
-        MouseFunction.handle_mouse_zoom_out(self, event)
+    # def mouse_zoom_out(self, event):
+    #     MouseFunction.handle_mouse_zoom_out(self, event)
 
     # 프로그램 종료 이벤트
     def closeEvent(self, event):
