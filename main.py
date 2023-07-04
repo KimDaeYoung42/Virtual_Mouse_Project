@@ -1,3 +1,5 @@
+#키보드의 경우 파이챰이 관리자권한으로 실행되지 않으면 터치 x 
+
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.uic import loadUi
