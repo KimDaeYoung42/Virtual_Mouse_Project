@@ -1,3 +1,5 @@
+# MouseModule.py : 마우스, 키보드 기능의 상세 코드
+
 import cv2
 import math
 from PyQt5.QtCore import Qt, QEvent
@@ -32,7 +34,6 @@ class MouseFunction:
     # 2. 마우스 좌클릭 관련
     # 2.1 마우스 좌클릭 이벤트 (1번 좌클릭 / 좌 프레스(계속 누르는) )
     def handle_left_mouse_click(self):
-        self.text_view.append('마우스 좌클릭 이벤트 감지')
         # if MouseFunction.active_stop:
         #    return
 
@@ -41,7 +42,6 @@ class MouseFunction:
 
     # 2.2 마우스 좌 더블클릭 이벤트 (2번 좌클릭)
     def handle_left_mouse_doubleclick(self):
-        self.text_view.append('마우스 좌 더블클릭 이벤트 감지')
         # if MouseFunction.active_stop:
         #    return
 
@@ -49,7 +49,6 @@ class MouseFunction:
 
     # 2.3 마우스 좌클릭 후 드래그 이벤트
     def handle_left_mouse_drag(self):
-        self.text_view.append('마우스 좌클릭 후 드래그 이벤트 감지')
         # if MouseFunction.active_stop:
         #    return
 
@@ -60,7 +59,6 @@ class MouseFunction:
 
     # 2.4 마우스 좌클릭 후 끌어서 놓기 이벤트 (파일 이동 / 클릭 앤 무브 )
     def handle_left_mouse_dragandmove(self):
-        self.text_view.append('마우스 좌클릭 후 드래그 이벤트 감지')
         # if MouseFunction.active_stop:
         #    return
 
@@ -77,7 +75,6 @@ class MouseFunction:
 
     # 4.2 마우스 스크롤 이벤트 처리 - 기능 추가 필요!
     def handle_mouse_scroll(self, event):
-        self.text_view.append('마우스 스크롤 이벤트 감지')
         if MouseFunction.active_stop:
             return
 
@@ -89,7 +86,6 @@ class MouseFunction:
 
     # 4.2.1 화면 스크롤 - 확대 동작 수행 - 기능 추가 필요!
     def handle_mouse_zoom_in(self, event):
-        self.text_view.append('마우스 확대 이벤트 감지')
         if MouseFunction.active_stop:
             return
 
@@ -99,7 +95,6 @@ class MouseFunction:
 
     # 4.2.2 화면 스크롤 - 축소 동작 수행 - 기능 추가 필요!
     def handle_mouse_zoom_out(self, event):
-        self.text_view.append('마우스 축소 이벤트 감지')
         if MouseFunction.active_stop:
             return
 
