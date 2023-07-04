@@ -188,15 +188,12 @@ class WebcamWindow(QMainWindow):
 
     # 4.2.2 화면 스크롤 - 축소 동작 수행
     def mouse_zoom_out(self, event):
-        MouseFunction.handle_mouse_zoom_out(self, event)
-
-    # 윈도우 화상키보드 ON
-    def keyboard_on_Event(self):
-        subprocess.Popen('osk.exe', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        
+        MouseFunction.handle_mouse_zoom_out(self, event)      
 
     ### 키보드 기능 파트 (MouseModule.py에서 핸들 주고받아옴) ###
-
+    # 윈도우 화상키보드 ON // 마우스 프로그램이 관리자권한으로 실행되어야함
+    def keyboard_on_Event(self):
+        subprocess.Popen('osk.exe', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
     # 프로그램 종료 이벤트
