@@ -25,7 +25,7 @@ screen_size_x, screen_size_y = screen_size
 class Active_Webcam(QMainWindow):
     def __init__(self):
         super().__init__()
-        loadUi("App_WebCam.ui", self)               # UI 파일 로드
+        loadUi("UI_App_WebCam.ui", self)               # UI 파일 로드
         self.setWindowTitle("개발자 모드 - 웹캠 표현 (개발 0704버전)")
         # self.setWindowFlag(Qt.FramelessWindowHint) # 윈도우창 프레임 숨기기
 

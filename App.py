@@ -27,7 +27,7 @@ screen_size_x, screen_size_y = screen_size
 class App_Control(QMainWindow):
     def __init__(self):
         super().__init__()
-        loadUi("App_ui.ui", self)  # UI 파일 로드
+        loadUi("UI_App.ui", self)  # UI 파일 로드
         self.setWindowTitle("가상 인터페이스 프로그램 (개발 0704버전)")
 
         self.cap = None                             # 웹캠 객체
