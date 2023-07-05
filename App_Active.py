@@ -13,17 +13,18 @@ import math
 from HandTrackingModule import HandDetector
 from MouseModule import MouseFunction
 
-import autopy
 import pyautogui
+import time
 
-#################
-# 화면 크기 설정
-screen_size = autopy.screen.size()                  # print(screen_size) 1920, 1080 <- 모니터 1대만 사용시 기준
-screen_size_x, screen_size_y = screen_size
-#################
 
 class Active_Webcam(QMainWindow):
     def __init__(self):
+        self.start_time = 0
+        self.Lclicked = True
+        self.RClicked = True
+
+
+
         super().__init__()
         loadUi("UI_App_WebCam.ui", self)               # UI 파일 로드
         self.setWindowTitle("개발자 모드 - 웹캠 표현 (개발 0704버전)")
@@ -90,11 +91,33 @@ class Active_Webcam(QMainWindow):
                 left_ring_tip = left_lm_list[16]
                 left_pinty_tip = left_lm_list[20]
 
-                left_finger_distance = math.sqrt((left_index_tip[1] - left_middle_tip[1]) ** 2 + (left_index_tip[2] - left_middle_tip[2]) ** 2)
-                # 좌클릭 이벤트
+                left_finger_distance = math.sqrt((left_thumb_tip[1] - left_index_tip[1]) ** 2 + (left_thumb_tip[2] - left_index_tip[2]) ** 2)
                 print(left_finger_distance)
-                if left_finger_distance < 50:
+
+                # 마우스 움직임 이벤트
+                if left_thumb_state and left_index_state and left_middle_state and left_ring_state and left_pinky_state:
+                    self.mouse_MoveEvent(event=left_lm_list, screen_size=pyautogui.size())
+                    self.Lclicked = True
+                    self.RClicked = True
+
+                
+                # 좌클릭 이벤트
+                
+                if left_finger_distance < 50 and self.Lclicked:
+                    self.RClicked = True
+                    self.start_time = time.time()
+
                     self.mouse_Left_ClickEvent()
+                    self.Lclicked = False
+
+                # 드래그 And 드롭 이벤트
+                elapse_time = time.time() - self.start_time
+                if elapse_time > 1 and left_finger_distance < 50:
+                    pyautogui.mouseDown()       
+                    self.mouse_MoveEvent(event=left_lm_list, screen_size=pyautogui.size())
+                if left_finger_distance > 50:
+                    pyautogui.mouseUp()
+
             elif right_lm_list:
                 # 오른손
                 right_thumb_state = right_lm_list[4][2] < right_lm_list[3][2] < right_lm_list[2][2] < right_lm_list[1][2]
@@ -112,11 +135,24 @@ class Active_Webcam(QMainWindow):
                 right_ring_tip = right_lm_list[16]
                 right_pinky_tip = right_lm_list[20]
 
-                right_finger_distance = math.sqrt((right_index_tip[1] - right_middle_tip[1]) ** 2 + (right_index_tip[2] - right_middle_tip[2]) ** 2)
-                # 우클릭 이벤트
+                right_finger_distance = math.sqrt((right_thumb_tip[1] - right_index_tip[1]) ** 2 + (right_thumb_tip[2] - right_index_tip[2]) ** 2)
                 print(right_finger_distance)
-                if right_finger_distance < 50:
+
+                # 마우스 움직임 이벤트
+                if right_thumb_state and right_index_state and right_middle_state and right_ring_state and right_pinky_state:
+                    self.mouse_MoveEvent(event=right_lm_list, screen_size=pyautogui.size())
+                    self.Lclicked = True
+                    self.RClicked = True
+
+
+                # 우클릭 이벤트
+                
+                if right_finger_distance < 50 and self.RClicked:
+                    self.Lclicked = True
+
+
                     self.mouse_Right_ClickEnvet()
+                    self.RClicked = False
 
 
             if left_lm_list and right_lm_list:
@@ -200,10 +236,10 @@ class Active_Webcam(QMainWindow):
         self.text_view.append('기능 : 마우스 좌클릭 이벤트 감지')
 
     # 2.2 마우스 좌 더블클릭 이벤트 (2번 좌클릭)
+    def mouse_Double_ClickEvent(self):
+        MouseFunction.handle_left_mouse_doubleclick(self)
+        self.text_view.append('기능 : 마우스 더블클릭 이벤트 감지')
 
-    # 2.3 마우스 좌클릭 후 드래그 이벤트
-
-    # 2.4 마우스 좌클릭 후 끌어서 놓기 이벤트 (파일 이동 / 클릭 앤 무브)
 
     # 3. 마우스 우클릭 관련
     # 3.1 마우스 우클릭 이벤트 (1번 우클릭 / 우 프레스 (계속 누르는) )

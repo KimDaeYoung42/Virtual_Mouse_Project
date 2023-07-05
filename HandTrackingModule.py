@@ -4,7 +4,7 @@ import math
 
 # 손 검출파트 (클래스화)
 class HandDetector:
-    def __init__(self, mode=False, max_hands=2, detection_confidence=0.5, tracking_confidence=0.5):
+    def __init__(self, mode=False, max_hands=2, detection_confidence=0.8, tracking_confidence=0.8):
         self.mode = mode
         self.max_hands = max_hands
         self.detection_confidence = detection_confidence
