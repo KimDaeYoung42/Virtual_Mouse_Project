@@ -69,6 +69,8 @@ class MouseFunction:
 
     # 3. 마우스 우클릭 관련
     # 3.1 마우스 우클릭 이벤트 (1번 우클릭 / 우 프레스 (계속 누르는) )
+    def handle_right_mouse_click(self):
+        pyautogui.rightClick()
 
     # 4. 마우스 스크롤 관련
     # 4.1 마우스 스크롤 클릭 이벤트

@@ -72,9 +72,8 @@ class Active_Webcam(QMainWindow):
             right_ring_state = False  # 약지
             right_pinky_state = False  # 소지
 
-            #
-            if left_lm_list and right_lm_list:
-                # 손가락 펴짐 상태의 조건 왼손 오른손 따로 설정
+
+            if left_lm_list:
                 # 왼손
                 left_thumb_state = left_lm_list[4][2] < left_lm_list[3][2] < left_lm_list[2][2] < left_lm_list[1][2]
                 left_index_state = left_lm_list[8][2] < left_lm_list[7][2] < left_lm_list[6][2] < left_lm_list[5][2]
@@ -84,6 +83,19 @@ class Active_Webcam(QMainWindow):
 
                 # print(left_thumb_state, left_index_state, left_middle_state, left_ring_state, left_pinky_state)      # 손가락 펴짐상태 출력
 
+                # print(left_lm_list)
+                left_thumb_tip = left_lm_list[4]
+                left_index_tip = left_lm_list[8]
+                left_middle_tip = left_lm_list[12]
+                left_ring_tip = left_lm_list[16]
+                left_pinty_tip = left_lm_list[20]
+
+                left_finger_distance = math.sqrt((left_index_tip[1] - left_middle_tip[1]) ** 2 + (left_index_tip[2] - left_middle_tip[2]) ** 2)
+                # 좌클릭 이벤트
+                print(left_finger_distance)
+                if left_finger_distance < 50:
+                    self.mouse_Left_ClickEvent()
+            elif right_lm_list:
                 # 오른손
                 right_thumb_state = right_lm_list[4][2] < right_lm_list[3][2] < right_lm_list[2][2] < right_lm_list[1][2]
                 right_index_state = right_lm_list[8][2] < right_lm_list[7][2] < right_lm_list[6][2] < right_lm_list[5][2]
@@ -92,7 +104,34 @@ class Active_Webcam(QMainWindow):
                 right_pinky_state = right_lm_list[20][2] < right_lm_list[19][2] < right_lm_list[18][2] < right_lm_list[17][2]
 
                 # print(right_thumb_state, right_index_state, right_middle_state, right_ring_state, right_pinky_state)      # 손가락 펴짐상태 출력
-                ################################
+
+                # print(right_lm_list)
+                right_thumb_tip = right_lm_list[4]
+                right_index_tip = right_lm_list[8]
+                right_middle_tip = right_lm_list[12]
+                right_ring_tip = right_lm_list[16]
+                right_pinky_tip = right_lm_list[20]
+
+                right_finger_distance = math.sqrt((right_index_tip[1] - right_middle_tip[1]) ** 2 + (right_index_tip[2] - right_middle_tip[2]) ** 2)
+                # 우클릭 이벤트
+                print(right_finger_distance)
+                if right_finger_distance < 50:
+                    self.mouse_Right_ClickEnvet()
+
+
+            if left_lm_list and right_lm_list:
+                print()
+
+                # 좌클릭 -> 왼손 딸깍
+                # print(left_lm_list)
+                
+                # if left_finger_distance < 30:
+                #     self.mouse_Left_ClickEvent()
+
+                # 우클릭 -> 오른손 딸딱
+                # right_finger_distance = math.sqrt((right_index_tip[1] - right_middle_tip[1]) ** 2 + (right_index_tip[2] - right_middle_tip[2]) ** 2)
+                # if right_finger_distance < 30:
+                #     self.mouse_
 
                 # 일반 행동 해제 (손 모양이 주먹일 경우) <- 오류 있음
                 # if not (thumb_state or index_state or middle_state or ring_state or pinky_state):
@@ -168,6 +207,9 @@ class Active_Webcam(QMainWindow):
 
     # 3. 마우스 우클릭 관련
     # 3.1 마우스 우클릭 이벤트 (1번 우클릭 / 우 프레스 (계속 누르는) )
+    def mouse_Right_ClickEnvet(self):
+        MouseFunction.handle_right_mouse_click(self)
+        self.text_view.append('기능 : 마우스 우클릭 이벤트 감지')
 
     # 4. 마우스 스크롤 관련
     # 4.1 마우스 스크롤 클릭 이벤트

@@ -4,7 +4,7 @@ import math
 
 # 손 검출파트 (클래스화)
 class HandDetector:
-    def __init__(self, mode=False, max_hands=2, detection_confidence=0.8, tracking_confidence=0.8):
+    def __init__(self, mode=False, max_hands=2, detection_confidence=0.5, tracking_confidence=0.5):
         self.mode = mode
         self.max_hands = max_hands
         self.detection_confidence = detection_confidence
@@ -28,13 +28,8 @@ class HandDetector:
 
 
     # 손의 랜드마크 리턴 하는 부분 여기서 양 손의 랜드마크를 따로 따로 리턴 해줘야 함.
-    def find_positions(self, img, hand_number=0, draw=True):
-        left_x_list = []
-        left_y_list = []
-        right_x_list = []
-        right_y_list = []
-        left_bbox = []
-        right_bbox = []
+    def find_positions(self, img, draw=True):
+
         self.left_lm_list = []
         self.right_lm_list = []
 
@@ -47,12 +42,8 @@ class HandDetector:
                     handedness = self.results.multi_handedness
                     for hand in handedness:
                         if hand.classification[0].label == "Left":
-                            left_x_list.append(cx)
-                            left_y_list.append(cy)
                             self.left_lm_list.append([idx, cx, cy])
                         elif hand.classification[0].label == "Right":
-                            right_x_list.append(cx)
-                            right_y_list.append(cy)
                             self.right_lm_list.append([idx, cx, cy])
                 
                         
