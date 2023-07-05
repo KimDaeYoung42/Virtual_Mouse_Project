@@ -57,63 +57,59 @@ class Active_Webcam(QMainWindow):
         if ret:
             frame = cv2.flip(frame, 1)  # 웹캠 좌우 반전
             frame = self.hand_detector.find_hands(frame)
-            lm_list, _ = self.hand_detector.find_positions(frame)
+            left_lm_list, right_lm_list = self.hand_detector.find_positions(frame)
 
             # 각 손가락의 상태 ( True==펴짐, False==안펴짐)
-            thumb_state = False  # 엄지
-            index_state = False  # 검지
-            middle_state = False  # 중지
-            ring_state = False  # 약지
-            pinky_state = False  # 소지
+            left_thumb_state = False  # 엄지
+            left_index_state = False  # 검지
+            left_middle_state = False  # 중지
+            left_ring_state = False  # 약지
+            left_pinky_state = False  # 소지
+
+            right_thumb_state = False  # 엄지
+            right_index_state = False  # 검지
+            right_middle_state = False  # 중지
+            right_ring_state = False  # 약지
+            right_pinky_state = False  # 소지
 
             #
-            if lm_list:
-                # 손가락 펴짐 상태의 조건 (좌클릭 동작 수행 - 손가락 거리 조건)
-                if lm_list[4][2] < lm_list[3][2]:
-                    if lm_list[3][2] < lm_list[2][2]:
-                        if lm_list[2][2] < lm_list[1][2]:
-                            thumb_state = True
+            if left_lm_list and right_lm_list:
+                # 손가락 펴짐 상태의 조건 왼손 오른손 따로 설정
+                # 왼손
+                left_thumb_state = left_lm_list[4][2] < left_lm_list[3][2] < left_lm_list[2][2] < left_lm_list[1][2]
+                left_index_state = left_lm_list[8][2] < left_lm_list[7][2] < left_lm_list[6][2] < left_lm_list[5][2]
+                left_middle_state = left_lm_list[12][2] < left_lm_list[11][2] < left_lm_list[10][2] < left_lm_list[9][2]
+                left_ring_state = left_lm_list[16][2] < left_lm_list[15][2] < left_lm_list[14][2] < left_lm_list[13][2]
+                left_pinky_state = left_lm_list[20][2] < left_lm_list[19][2] < left_lm_list[18][2] < left_lm_list[17][2]
 
-                if lm_list[8][2] < lm_list[7][2]:
-                    if lm_list[7][2] < lm_list[6][2]:
-                        if lm_list[6][2] < lm_list[5][2]:
-                            index_state = True
+                # print(left_thumb_state, left_index_state, left_middle_state, left_ring_state, left_pinky_state)      # 손가락 펴짐상태 출력
 
-                if lm_list[12][2] < lm_list[11][2]:
-                    if lm_list[11][2] < lm_list[10][2]:
-                        if lm_list[10][2] < lm_list[9][2]:
-                            middle_state = True
+                # 오른손
+                right_thumb_state = right_lm_list[4][2] < right_lm_list[3][2] < right_lm_list[2][2] < right_lm_list[1][2]
+                right_index_state = right_lm_list[8][2] < right_lm_list[7][2] < right_lm_list[6][2] < right_lm_list[5][2]
+                right_middle_state = right_lm_list[12][2] < right_lm_list[11][2] < right_lm_list[10][2] < right_lm_list[9][2]
+                right_ring_state = right_lm_list[16][2] < right_lm_list[15][2] < right_lm_list[14][2] < right_lm_list[13][2]
+                right_pinky_state = right_lm_list[20][2] < right_lm_list[19][2] < right_lm_list[18][2] < right_lm_list[17][2]
 
-                if lm_list[16][2] < lm_list[15][2]:
-                    if lm_list[15][2] < lm_list[14][2]:
-                        if lm_list[14][2] < lm_list[13][2]:
-                            ring_state = True
-
-                if lm_list[20][2] < lm_list[19][2]:
-                    if lm_list[19][2] < lm_list[18][2]:
-                        if lm_list[18][2] < lm_list[17][2]:
-                            pinky_state = True
-
-                print(thumb_state, index_state, middle_state, ring_state, pinky_state)      # 손가락 펴짐상태 출력
-
+                # print(right_thumb_state, right_index_state, right_middle_state, right_ring_state, right_pinky_state)      # 손가락 펴짐상태 출력
                 ################################
 
                 # 일반 행동 해제 (손 모양이 주먹일 경우) <- 오류 있음
-                if not (thumb_state or index_state or middle_state or ring_state or pinky_state):
-                    self.active_stop() # 웹캠 실행 시 - 손이 인식이 안되면 꺼지는 오류 있음.
-                    self.text_view.append('기능 : 일반 행동 해제')
+                # if not (thumb_state or index_state or middle_state or ring_state or pinky_state):
+                #     self.active_stop() # 웹캠 실행 시 - 손이 인식이 안되면 꺼지는 오류 있음.
+                #     self.text_view.append('기능 : 일반 행동 해제')
 
-                # 마우스 커서 이동 (모든 손가락이 펴진 상태인 True일때)
-                if thumb_state and index_state and middle_state and ring_state and pinky_state:
-                    self.mouse_MoveEvent(event=lm_list, screen_size=pyautogui.size())
+                # # 마우스 커서 이동 (모든 손가락이 펴진 상태인 True일때)
+                # if thumb_state and index_state and middle_state and ring_state and pinky_state:
+                #     self.mouse_MoveEvent(event=lm_list, screen_size=pyautogui.size())
 
-                # 마우스 좌클릭 조건
-                thumb_tip = lm_list[4]
-                index_tip = lm_list[8]
-                distance_Left = math.sqrt((thumb_tip[1] - index_tip[1]) ** 2 + (thumb_tip[2] - index_tip[2]) ** 2)
+                # # 마우스 좌클릭 조건
+                # thumb_tip = lm_list[4]
+                # index_tip = lm_list[8]
+                # distance_Left = math.sqrt((thumb_tip[1] - index_tip[1]) ** 2 + (thumb_tip[2] - index_tip[2]) ** 2)
 
-                if distance_Left < 30:
-                    self.mouse_Left_ClickEvent()
+                # if distance_Left < 30:
+                #     self.mouse_Left_ClickEvent()
 
                 # 양손 트래킹 기반 확대/축소 수행
                 # if lm_list and len(lm_list) >= 9:
@@ -136,8 +132,8 @@ class Active_Webcam(QMainWindow):
                 #          pyautogui.scroll(-20)
 
                 # 키보드 기능 화상키보드 켜기 (새끼손가락만)
-                if not (thumb_state and index_state and middle_state and ring_state) and pinky_state:
-                    self.keyboard_on_Event()
+                # if not (thumb_state and index_state and middle_state and ring_state) and pinky_state:
+                #     self.keyboard_on_Event()
 
             # 프레임 화면에 출력
             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # BGR을 RGB로 변환

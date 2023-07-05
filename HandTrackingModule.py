@@ -26,33 +26,42 @@ class HandDetector:
                     self.mp_draw.draw_landmarks(img, hand_landmarks, self.mp_hands.HAND_CONNECTIONS)
         return img
 
+
+    # 손의 랜드마크 리턴 하는 부분 여기서 양 손의 랜드마크를 따로 따로 리턴 해줘야 함.
     def find_positions(self, img, hand_number=0, draw=True):
-        x_list = []
-        y_list = []
-        bbox = []
-        self.lm_list = []
+        left_x_list = []
+        left_y_list = []
+        right_x_list = []
+        right_y_list = []
+        left_bbox = []
+        right_bbox = []
+        self.left_lm_list = []
+        self.right_lm_list = []
 
         if self.results.multi_hand_landmarks:
-            my_hand = self.results.multi_hand_landmarks[hand_number]
-            for id, lm in enumerate(my_hand.landmark):
-                # print(id, lm)
-                h, w, c = img.shape
-                cx, cy = int(lm.x * w), int(lm.y * h)
-                x_list.append(cx)
-                y_list.append(cy)
-                # print(id, cx, cy)
-                self.lm_list.append([id, cx, cy])
+            hand = self.results.multi_hand_landmarks
+            h, w, c = img.shape
+            for _, lm in enumerate(hand):
+                for idx in range(0,21):
+                    cx, cy = int(lm.landmark[idx].x * w), int(lm.landmark[idx].y * h)
+                    handedness = self.results.multi_handedness
+                    for hand in handedness:
+                        if hand.classification[0].label == "Left":
+                            left_x_list.append(cx)
+                            left_y_list.append(cy)
+                            self.left_lm_list.append([idx, cx, cy])
+                        elif hand.classification[0].label == "Right":
+                            right_x_list.append(cx)
+                            right_y_list.append(cy)
+                            self.right_lm_list.append([idx, cx, cy])
+                
+                        
                 if draw:
                     cv2.circle(img, (cx, cy), 5, (255, 0, 255), cv2.FILLED)
+                # print(self.left_lm_list, self.right_lm_list)
+                
 
-            x_min, x_max = min(x_list), max(x_list)
-            y_min, y_max = min(y_list), max(y_list)
-            bbox = x_min, y_min, x_max, y_max
-
-            if draw:
-                cv2.rectangle(img, (bbox[0] - 20, bbox[1] - 20), (bbox[2] + 20, bbox[3] + 20), (0, 255, 0), 2)
-
-        return self.lm_list, bbox
+        return self.left_lm_list, self.right_lm_list
 
     def fingers_up(self):
         fingers = []
