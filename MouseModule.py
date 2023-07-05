@@ -16,7 +16,8 @@ class MouseFunction:
 
     active_stop = False  # 임시
 
-    # 1. 마우스 이동 이밴트 처리
+    ## 공통 기능 / 양손 제스처 ##
+    # 1.1 / 2.1 마우스 이동 이벤트
     def handle_mouse_move(self, event, screen_size):
         if MouseFunction.active_stop:
             return
@@ -31,8 +32,8 @@ class MouseFunction:
         # QCursor.setPos(cursor_x, cursor_y)
         self.cursor().setPos(cursor_x, cursor_y)
 
-    # 2. 마우스 좌클릭 관련
-    # 2.1 마우스 좌클릭 이벤트 (1번 좌클릭 / 좌 프레스(계속 누르는) )
+    ## 1. 왼손 제스처 기준 ##
+    # 1.2 마우스 좌클릭 관련 (1번 좌클릭 / 좌 프레스(계속 누르는) )
     def handle_left_mouse_click(self):
         # if MouseFunction.active_stop:
         #    return
@@ -40,14 +41,14 @@ class MouseFunction:
         # 클릭 이벤트 다수 입력 방지 - 시간초 제한?
         pyautogui.click()  # 파일 선택 혹은 웹 브라우저 창 선택 등의 동작 수행
 
-    # 2.2 마우스 좌 더블클릭 이벤트 (2번 좌클릭)
+    # 1.3 마우스 좌 더블클릭 이벤트 (2번 좌클릭)
     def handle_left_mouse_doubleclick(self):
         # if MouseFunction.active_stop:
         #    return
 
         pyautogui.doubleClick()
 
-    # 2.3 마우스 좌클릭 후 드래그 이벤트
+    # 1.4 마우스 좌클릭 후 드래그 / 드래그 and 드롭 이벤트
     def handle_left_mouse_drag(self):
         # if MouseFunction.active_stop:
         #    return
@@ -56,24 +57,18 @@ class MouseFunction:
         pyautogui.dragTo()          # 드래그 이벤트
         pyautogui.mouseUp()         # 클릭 해제 이벤트
 
+    # 구) 마우스 좌클릭 후 끌어서 놓기 이벤트 (파일 이동 / 클릭 앤 무브 )
+    # - 구) 마우스 좌클릭 후 드래그 이벤트 동일해서 코드 삭제 하기
+    # def handle_left_mouse_dragandmove(self):
+    #     # if MouseFunction.active_stop:
+    #     #    return
+    #
+    #     pyautogui.mouseDown()               # 클릭 이벤트 발생
+    #     pyautogui.moveTo()                  # 드래그 시작 위치로 이동
+    #     pyautogui.dragTo(duration=1)        # 드래그 동작 수행
+    #     pyautogui.mouseUp()                 # 클릭 해제 이벤트
 
-    # 2.4 마우스 좌클릭 후 끌어서 놓기 이벤트 (파일 이동 / 클릭 앤 무브 )
-    def handle_left_mouse_dragandmove(self):
-        # if MouseFunction.active_stop:
-        #    return
-
-        pyautogui.mouseDown()               # 클릭 이벤트 발생
-        pyautogui.moveTo()                  # 드래그 시작 위치로 이동
-        pyautogui.dragTo(duration=1)        # 드래그 동작 수행
-        pyautogui.mouseUp()                 # 클릭 해제 이벤트
-
-    # 3. 마우스 우클릭 관련
-    # 3.1 마우스 우클릭 이벤트 (1번 우클릭 / 우 프레스 (계속 누르는) )
-
-    # 4. 마우스 스크롤 관련
-    # 4.1 마우스 스크롤 클릭 이벤트
-
-    # 4.2 마우스 스크롤 이벤트 처리 - 기능 추가 필요!
+    # 1.5 마우스 스크롤 확대 및 축소 이벤트
     def handle_mouse_scroll(self, event):
         if MouseFunction.active_stop:
             return
@@ -84,7 +79,7 @@ class MouseFunction:
         elif delta < 0:
             self.zoom_out()
 
-    # 4.2.1 화면 스크롤 - 확대 동작 수행 - 기능 추가 필요!
+    # 1.5.1 화면 스크롤 - 확대 동작 수행
     def handle_mouse_zoom_in(self, event):
         if MouseFunction.active_stop:
             return
@@ -93,7 +88,7 @@ class MouseFunction:
         current_height = self.Webcam_label.height()
         self.Webcam_label.resize(current_width + 10, current_height + 10)
 
-    # 4.2.2 화면 스크롤 - 축소 동작 수행 - 기능 추가 필요!
+    # 1.5.2 화면 스크롤 - 축소 동작 수행
     def handle_mouse_zoom_out(self, event):
         if MouseFunction.active_stop:
             return
@@ -101,6 +96,15 @@ class MouseFunction:
         current_width = self.Webcam_label.width()
         current_height = self.Webcam_label.height()
         self.Webcam_label.resize(current_width + 10, current_height + 10)
+
+    ## 2. 오른손 제스처 기준 ##
+    # 2.2 마우스 우클릭 이벤트 (1번 우클릭 / 우 프레스 (계속 누르는) )
+    def handle_right_mouse_click(self):
+        pyautogui.rightClick()
+
+    # 2.3 윈도우 창 확대 축소 이벤트
+
+    # 2.4 키보드 기능 화상키보드 켜기 (새끼손가락만)
 
 
 
