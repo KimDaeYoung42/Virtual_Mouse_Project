@@ -102,12 +102,16 @@ class Active_Webcam(QMainWindow):
                 left_ring_tip = left_lm_list[16]
                 left_pinty_tip = left_lm_list[20]
 
-                left_finger_distance = math.sqrt(
-                    (left_thumb_tip[1] - left_index_tip[1]) ** 2 + (left_thumb_tip[2] - left_index_tip[2]) ** 2)
+                left_index_middle_distance = math.sqrt(
+                    (left_index_tip[1] - left_middle_tip[1]) ** 2 + (left_index_tip[2] - left_middle_tip[2]) ** 2 
+                )
 
-                # print(left_finger_distance)
+                print(left_index_middle_distance)
 
                 # 1.0 왼손 행동 해제 (손 모양이 주먹일 경우) <- 오류 있음
+                if not left_pinky_state and not left_ring_state and not left_middle_state and not left_index_state and not left_thumb_state:
+                    self.Lclicked = True
+                    self.RClicked = True
                 # if not (thumb_state or index_state or middle_state or ring_state or pinky_state):
                 #    self.active_stop()        # 웹캠 실행 시 - 손이 인식이 안되면 꺼지는 오류 있음.
                 #    self.text_view.append('기능 : 일반 행동 해제')
@@ -115,16 +119,13 @@ class Active_Webcam(QMainWindow):
                 # 1.1 마우스 이동 이벤트
                 if left_thumb_state and left_index_state and left_middle_state and left_ring_state and left_pinky_state:
                     self.mouse_MoveEvent(event=left_lm_list, screen_size=pyautogui.size())
-                    self.Lclicked = True
-                    self.RClicked = True
 
                 # 1.2 마우스 좌클릭 이벤트
-                if left_finger_distance < 50 and self.Lclicked:
-                    self.RClicked = True
-                    self.start_time = time.time()
-
-                    self.mouse_Left_ClickEvent()
-                    self.Lclicked = False
+                # if not left_pinky_state and not left_ring_state and left_middle_state and left_index_state and left_index_middle_distance < 50:
+                #     self.RClicked = True
+                #     if self.Lclicked:
+                #         self.mouse_Left_ClickEvent()
+                #         self.Lclicked = False
 
                 # 구) 마우스 좌클릭 조건
                 # thumb_tip_leftclick = lm_list[4]
@@ -153,12 +154,18 @@ class Active_Webcam(QMainWindow):
                 #         elapse_time = 0
 
                 # 1.4 마우스 좌클릭 후 드래그 / 드래그 and 드롭 이벤트
+                if left_index_middle_distance < 50 and left_index_state and left_middle_state and left_ring_state and left_pinky_state:
+                    self.start_time = time.time()
+                    if self.Lclicked:
+                        self.mouse_Left_ClickEvent()
+                        self.Lclicked = False
                 elapse_time = time.time() - self.start_time
-                if elapse_time > 1 and left_finger_distance < 50:
-                    pyautogui.mouseDown()
-                    self.mouse_MoveEvent(event=left_lm_list, screen_size=pyautogui.size())
-                    if left_finger_distance > 50:
-                        pyautogui.mouseUp()
+                if elapse_time > 1:
+                    pyautogui.mouseDown(button='left')
+                    if left_index_middle_distance < 50:
+                        self.mouse_MoveEvent(event=left_lm_list, screen_size=pyautogui.size())
+                    if left_index_middle_distance > 50:
+                        pyautogui.mouseUp(button='right')
                         elapse_time = 0
 
                 # 1.5 마우스 스크롤 확대 및 축소 이벤트
@@ -208,17 +215,17 @@ class Active_Webcam(QMainWindow):
                 #    self.text_view.append('기능 : 일반 행동 해제')
 
                 # 2.1 마우스 움직임 이벤트
-                if right_thumb_state and right_index_state and right_middle_state and right_ring_state and right_pinky_state:
-                    self.mouse_MoveEvent(event=right_lm_list, screen_size=pyautogui.size())
-                    self.Lclicked = True
-                    self.RClicked = True
+                # if right_thumb_state and right_index_state and right_middle_state and right_ring_state and right_pinky_state:
+                #     self.mouse_MoveEvent(event=right_lm_list, screen_size=pyautogui.size())
+                #     self.Lclicked = True
+                #     self.RClicked = True
 
                 # 2.2 마우스 우클릭 이벤트
-                if right_finger_distance < 50 and self.RClicked:
-                    self.Lclicked = True
+                # if right_finger_distance < 50 and self.RClicked:
+                #     self.Lclicked = True
 
-                    self.mouse_Right_ClickEnvet()
-                    self.RClicked = False
+                #     self.mouse_Right_ClickEnvet()
+                #     self.RClicked = False
 
                 # 2.3 윈도우 창 확대 축소 이벤트
                 # 구) 윈도우 창 확대 축소 기능 코드
