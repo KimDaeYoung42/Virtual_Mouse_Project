@@ -17,6 +17,9 @@ import autopy
 import pyautogui
 import time
 import pygetwindow as gw
+import numpy as np
+
+from matplotlib import pyplot as plt
 #################
 # 모니터 화면 크기 설정
 screen_size = autopy.screen.size()                  # print(screen_size) 1920, 1080 <- 모니터 1대만 사용시 기준
@@ -72,6 +75,13 @@ class Active_Webcam(QMainWindow):
             frame = self.hand_detector.find_hands(frame)
             left_lm_list, right_lm_list = self.hand_detector.find_positions(frame)
 
+            # 손가락 각도 계산
+            joint_list = [[4,3,2], [8,7,6], [12,11,10], [16,15,14], [20,19,18]]
+            finger_names = ['thumb', 'index', 'middle', 'ring', 'pinky']
+            left_finger_angles = []
+            right_finger_angles = []            
+            
+
             # 각 손가락의 상태 ( True==펴짐, False==안펴짐)
             left_thumb_state = False  # 엄지
             left_index_state = False  # 검지
@@ -87,6 +97,29 @@ class Active_Webcam(QMainWindow):
 
             # 1. 왼손
             if left_lm_list:
+
+                # 각 손가락 각도 계산
+                for i, joint in enumerate(joint_list):
+                    a = np.array([left_lm_list[joint[0]][1], left_lm_list[joint[0]][2]]) # First Coord
+                    b = np.array([left_lm_list[joint[1]][1], left_lm_list[joint[1]][2]]) # Second Coord
+                    c = np.array([left_lm_list[joint[2]][1], left_lm_list[joint[2]][2]]) # Third Coord
+
+                    radians = np.arctan2(c[1] - b[1], c[0]-b[0]) - np.arctan2(a[1]-b[1], a[0]-b[0])
+                    left_angle = np.abs(radians*180.0/np.pi)
+
+                    if left_angle > 180.0:
+                        left_angle = 360-left_angle
+
+                    left_finger_angles.append(left_angle)
+
+                for i, finger_name in enumerate(finger_names):
+                    left_angle = left_finger_angles[i]  # 손가락별 관절 각도
+
+                    # print(f'{finger_name}: {left_angle} degrees')
+                          
+                print(left_finger_angles[0])    # 0번 = 엄지, 4번 = 소지
+                
+
                 left_thumb_state = left_lm_list[4][2] < left_lm_list[3][2] < left_lm_list[2][2] < left_lm_list[1][2]
                 left_index_state = left_lm_list[8][2] < left_lm_list[7][2] < left_lm_list[6][2] < left_lm_list[5][2]
                 left_middle_state = left_lm_list[12][2] < left_lm_list[11][2] < left_lm_list[10][2] < left_lm_list[9][2]
@@ -106,7 +139,7 @@ class Active_Webcam(QMainWindow):
                     (left_index_tip[1] - left_middle_tip[1]) ** 2 + (left_index_tip[2] - left_middle_tip[2]) ** 2 
                 )
 
-                print(left_index_middle_distance)
+                # print(left_index_middle_distance)
 
                 # 1.0 왼손 행동 해제 (손 모양이 주먹일 경우) <- 오류 있음
                 if not left_pinky_state and not left_ring_state and not left_middle_state and not left_index_state and not left_thumb_state:
@@ -154,19 +187,19 @@ class Active_Webcam(QMainWindow):
                 #         elapse_time = 0
 
                 # 1.4 마우스 좌클릭 후 드래그 / 드래그 and 드롭 이벤트
-                if left_index_middle_distance < 50 and left_index_state and left_middle_state and left_ring_state and left_pinky_state:
-                    self.start_time = time.time()
-                    if self.Lclicked:
-                        self.mouse_Left_ClickEvent()
-                        self.Lclicked = False
-                elapse_time = time.time() - self.start_time
-                if elapse_time > 1:
-                    pyautogui.mouseDown(button='left')
-                    if left_index_middle_distance < 50:
-                        self.mouse_MoveEvent(event=left_lm_list, screen_size=pyautogui.size())
-                    if left_index_middle_distance > 50:
-                        pyautogui.mouseUp(button='right')
-                        elapse_time = 0
+                # if left_index_middle_distance < 50 and left_index_state and left_middle_state and left_ring_state and left_pinky_state:
+                #     self.start_time = time.time()
+                #     if self.Lclicked:
+                #         self.mouse_Left_ClickEvent()
+                #         self.Lclicked = False
+                # elapse_time = time.time() - self.start_time
+                # if elapse_time > 1:
+                #     pyautogui.mouseDown(button='left')
+                #     if left_index_middle_distance < 50:
+                #         self.mouse_MoveEvent(event=left_lm_list, screen_size=pyautogui.size())
+                #     if left_index_middle_distance > 50:
+                #         pyautogui.mouseUp(button='right')
+                #         elapse_time = 0
 
                 # 1.5 마우스 스크롤 확대 및 축소 이벤트
                 # 구) 양손 트래킹 기반 확대/축소 수행 코드
@@ -191,6 +224,29 @@ class Active_Webcam(QMainWindow):
 
             # 2. 오른손
             elif right_lm_list:
+
+                # 각 손가락 각도 계산
+                for i, joint in enumerate(joint_list):
+                    a = np.array([right_lm_list[joint[0]][1], right_lm_list[joint[0]][2]]) # First Coord
+                    b = np.array([right_lm_list[joint[1]][1], right_lm_list[joint[1]][2]]) # Second Coord
+                    c = np.array([right_lm_list[joint[2]][1], right_lm_list[joint[2]][2]]) # Third Coord
+
+                    radians = np.arctan2(c[1] - b[1], c[0]-b[0]) - np.arctan2(a[1]-b[1], a[0]-b[0])
+                    right_angle = np.abs(radians*180.0/np.pi)
+
+                    if right_angle > 180.0:
+                        right_angle = 360-right_angle
+
+                    right_finger_angles.append(right_angle)
+
+                for i, finger_name in enumerate(finger_names):
+                    right_angle = right_finger_angles[i]  # 손가락별 관절 각도
+
+                    # print(f'{finger_name}: {right_angle} degrees')
+                          
+                print(right_finger_angles[0])    # 0번 = 엄지, 4번 = 소지
+
+
                 right_thumb_state = right_lm_list[4][2] < right_lm_list[3][2] < right_lm_list[2][2] < right_lm_list[1][2]
                 right_index_state = right_lm_list[8][2] < right_lm_list[7][2] < right_lm_list[6][2] < right_lm_list[5][2]
                 right_middle_state = right_lm_list[12][2] < right_lm_list[11][2] < right_lm_list[10][2] < right_lm_list[9][2]
