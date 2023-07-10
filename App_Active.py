@@ -76,7 +76,7 @@ class Active_Webcam(QMainWindow):
             left_lm_list, right_lm_list = self.hand_detector.find_positions(frame)
 
             # 손가락 각도 계산
-            joint_list = [[4,3,2], [8,7,6], [12,11,10], [16,15,14], [20,19,18]]
+            joint_list = [[3,0,5], [4,3,2], [8,7,6], [12,11,10], [16,15,14], [20,19,18]]
             finger_names = ['thumb', 'index', 'middle', 'ring', 'pinky']
             left_finger_angles = []
             right_finger_angles = []            
@@ -116,8 +116,10 @@ class Active_Webcam(QMainWindow):
                     left_angle = left_finger_angles[i]  # 손가락별 관절 각도
 
                     # print(f'{finger_name}: {left_angle} degrees')
-                          
-                print(left_finger_angles[0])    # 0번 = 엄지, 4번 = 소지
+
+                # 0 ~ 5번까지 6개의 각도가 나온다. 
+                # 0 번 - 엄지가 접힌경우 ----- 10 이하, 평상시 - 약 30 ~ 40, 1번 - 엄지손가락이 구부러진 정도, 2 ~ 5번 - 검지부터 소지까지 접히는 각도 
+                print(left_finger_angles[0])    
                 
 
                 left_thumb_state = left_lm_list[4][2] < left_lm_list[3][2] < left_lm_list[2][2] < left_lm_list[1][2]
@@ -244,7 +246,9 @@ class Active_Webcam(QMainWindow):
 
                     # print(f'{finger_name}: {right_angle} degrees')
                           
-                print(right_finger_angles[0])    # 0번 = 엄지, 4번 = 소지
+                # 0 ~ 5번까지 6개의 각도가 나온다. 
+                # 0 번 - 엄지가 접힌경우 ----- 10 이하, 평상시 - 약 30 ~ 40, 1번 - 엄지손가락이 구부러진 정도, 2 ~ 5번 - 검지부터 소지까지 접히는 각도
+                print(right_finger_angles[0])
 
 
                 right_thumb_state = right_lm_list[4][2] < right_lm_list[3][2] < right_lm_list[2][2] < right_lm_list[1][2]
@@ -339,8 +343,7 @@ class Active_Webcam(QMainWindow):
             q_img = QImage(rgb_frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
             q_pixmap = QPixmap.fromImage(q_img)
             self.Webcam_label.setPixmap(q_pixmap)
-
-
+    
 
     ### 마우스 기능 파트 (MouseModule.py에서 핸들 주고받아옴) ###
     ## 공통 기능 / 양손 제스처 ##
