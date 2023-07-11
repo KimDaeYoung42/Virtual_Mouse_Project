@@ -8,6 +8,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("가상 인터페이스 프로그램")
+        
         # loadUi("Main_testui.ui", self)  # 추후 UI 파일 제작 후 적용하기.
         self.setGeometry(100, 100, 300, 200)
 

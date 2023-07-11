@@ -76,6 +76,9 @@ class HandDetector:
 
         # return self.lm_list, bbox
 
+
+
+    # 구) 손가락 확인 (초기 핸드트래킹 사용 모듈)
     def fingers_up(self):
         fingers = []
         # Thumb
@@ -95,6 +98,7 @@ class HandDetector:
         # totalFingers = fingers.count(1)
         return fingers
 
+    # 구) 손가락 확인 (초기 핸드트래킹 사용 모듈)
     def find_Distance(self, p1, p2, img, draw=True, r=15, t=3):
         x1, y1 = self.lmList[p1][1:]
         x2, y2 = self.lmList[p2][1:]

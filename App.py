@@ -28,7 +28,7 @@ class App_Control(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi("UI_App.ui", self)  # UI 파일 로드
-        self.setWindowTitle("가상 인터페이스 프로그램 (개발 0710버전)")
+        self.setWindowTitle("가상 인터페이스 프로그램 (개발 0711버전)")
         self.setGeometry(420, 100, 465, 260)
 
         self.cap = None                             # 웹캠 객체
@@ -58,6 +58,7 @@ class App_Control(QMainWindow):
 
         if self.cap is not None:
             self.cap.release()
+            self.text_view.append('경고 : 웹캠이 정상적으로 작동되지 않습니다.') 
             self.cap = None
         self.timer.stop()
         # self.label.clear() # <-- 종료
