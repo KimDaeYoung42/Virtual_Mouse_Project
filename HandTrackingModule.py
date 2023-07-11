@@ -41,13 +41,13 @@ class HandDetector:
             h, w, c = img.shape
             for _, lm in enumerate(hand):
                 for idx in range(0, 21):
-                    cx, cy = int(lm.landmark[idx].x * w), int(lm.landmark[idx].y * h)
+                    cx, cy, cz = int(lm.landmark[idx].x * w), int(lm.landmark[idx].y * h), int(lm.landmark[idx].z * c)
                     handedness = self.results.multi_handedness
                     for hand in handedness:
                         if hand.classification[0].label == "Left":
-                            self.left_lm_list.append([idx, cx, cy])
+                            self.left_lm_list.append([idx, cx, cy, cz])
                         elif hand.classification[0].label == "Right":
-                            self.right_lm_list.append([idx, cx, cy])
+                            self.right_lm_list.append([idx, cx, cy, cz])
                 if draw:
                     cv2.circle(img, (cx, cy), 5, (255, 0, 255), cv2.FILLED)
                     # print(self.left_lm_list, self.right_lm_list)
