@@ -141,16 +141,19 @@ class Active_Webcam(QMainWindow):
 
                 # 0 ~ 5번까지 6개의 각도가 나온다. 
                 # 0 번 - 엄지가 접힌경우 ----- 10 이하, 평상시 - 약 30 ~ 40, 1번 - 엄지손가락이 구부러진 정도, 2 ~ 5번 - 검지부터 소지까지 접히는 각도 
-                print(left_finger_angles[0])    
+                # print(left_finger_angles[0])  
 
 
-                left_thumb_state = left_lm_list[4][2] < left_lm_list[3][2] < left_lm_list[2][2] < left_lm_list[1][2]
+                if left_finger_angles[0] > 10:
+                    left_thumb_state = True
+                else:
+                    left_thumb_state = False
                 left_index_state = left_lm_list[8][2] < left_lm_list[7][2] < left_lm_list[6][2] < left_lm_list[5][2]
                 left_middle_state = left_lm_list[12][2] < left_lm_list[11][2] < left_lm_list[10][2] < left_lm_list[9][2]
                 left_ring_state = left_lm_list[16][2] < left_lm_list[15][2] < left_lm_list[14][2] < left_lm_list[13][2]
                 left_pinky_state = left_lm_list[20][2] < left_lm_list[19][2] < left_lm_list[18][2] < left_lm_list[17][2]
 
-                # print(left_thumb_state, left_index_state, left_middle_state, left_ring_state, left_pinky_state)      # 손가락 펴짐상태 출력
+                print(left_thumb_state, left_index_state, left_middle_state, left_ring_state, left_pinky_state)      # 손가락 펴짐상태 출력
 
                 # print(left_lm_list)
                 left_thumb_tip = left_lm_list[4]
@@ -329,9 +332,10 @@ class Active_Webcam(QMainWindow):
                 # 0 번 - 엄지가 접힌경우 ----- 10 이하, 평상시 - 약 30 ~ 40, 1번 - 엄지손가락이 구부러진 정도, 2 ~ 5번 - 검지부터 소지까지 접히는 각도
                 print(right_finger_angles[0])
 
-
-
-                right_thumb_state = right_lm_list[4][2] < right_lm_list[3][2] < right_lm_list[2][2] < right_lm_list[1][2]
+                if right_finger_angles[0] > 10:
+                    right_thumb_state = True
+                else:
+                    right_thumb_state = False
                 right_index_state = right_lm_list[8][2] < right_lm_list[7][2] < right_lm_list[6][2] < right_lm_list[5][2]
                 right_middle_state = right_lm_list[12][2] < right_lm_list[11][2] < right_lm_list[10][2] < right_lm_list[9][2]
                 right_ring_state = right_lm_list[16][2] < right_lm_list[15][2] < right_lm_list[14][2] < right_lm_list[13][2]
@@ -349,7 +353,7 @@ class Active_Webcam(QMainWindow):
                 right_index_middle_distance = math.sqrt(
                     (right_index_tip[1] - right_middle_tip[1]) ** 2 + (right_index_tip[2] - right_middle_tip[2]) ** 2
                 )
-                print(right_index_middle_distance)
+                # print(right_index_middle_distance)
 
                 # 2.0 오른손 행동 해제 (손 모양이 주먹일 경우)
                 if not right_pinky_state and not right_ring_state and not right_middle_state and not right_index_state and not right_thumb_state:
