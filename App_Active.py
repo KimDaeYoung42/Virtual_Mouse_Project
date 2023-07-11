@@ -98,8 +98,8 @@ class Active_Webcam(QMainWindow):
             frame = self.hand_detector.find_hands(frame)
             left_lm_list, right_lm_list = self.hand_detector.find_positions(frame)
 
-            # 손가락 각도 계산
-            joint_list = [[3,0,5], [4,3,2], [8,7,6], [12,11,10], [16,15,14], [20,19,18]]
+            # 손가락 각도 계산 1번째 인덱스인 [4,0,9] 는 수정이 필요해 보임. 주먹쥘때 and 엄지만 접었을 때 모두 접은 판정이 되도록 랜드마크 지정해야함.
+            joint_list = [[4,0,10], [4,3,2], [8,7,6], [12,11,10], [16,15,14], [20,19,18]]
             finger_names = ['thumb', 'index', 'middle', 'ring', 'pinky']
             left_finger_angles = []
             right_finger_angles = []      
@@ -140,11 +140,11 @@ class Active_Webcam(QMainWindow):
                     # print(f'{finger_name}: {left_angle} degrees')
 
                 # 0 ~ 5번까지 6개의 각도가 나온다. 
-                # 0 번 - 엄지가 접힌경우 ----- 10 이하, 평상시 - 약 30 ~ 40, 1번 - 엄지손가락이 구부러진 정도, 2 ~ 5번 - 검지부터 소지까지 접히는 각도 
-                # print(left_finger_angles[0])  
+                # 0 번 - 엄지가 접힌경우 ----- 20 이하, 평상시 - 약 30 ~ 40, 1번 - 엄지손가락이 구부러진 정도, 2 ~ 5번 - 검지부터 소지까지 접히는 각도 
+                print(left_finger_angles[0])  
 
 
-                if left_finger_angles[0] > 10:
+                if left_finger_angles[0] > 20:
                     left_thumb_state = True
                 else:
                     left_thumb_state = False
@@ -153,7 +153,7 @@ class Active_Webcam(QMainWindow):
                 left_ring_state = left_lm_list[16][2] < left_lm_list[15][2] < left_lm_list[14][2] < left_lm_list[13][2]
                 left_pinky_state = left_lm_list[20][2] < left_lm_list[19][2] < left_lm_list[18][2] < left_lm_list[17][2]
 
-                print(left_thumb_state, left_index_state, left_middle_state, left_ring_state, left_pinky_state)      # 손가락 펴짐상태 출력
+                # print(left_thumb_state, left_index_state, left_middle_state, left_ring_state, left_pinky_state)      # 손가락 펴짐상태 출력
 
                 # print(left_lm_list)
                 left_thumb_tip = left_lm_list[4]
@@ -332,7 +332,7 @@ class Active_Webcam(QMainWindow):
                 # 0 번 - 엄지가 접힌경우 ----- 10 이하, 평상시 - 약 30 ~ 40, 1번 - 엄지손가락이 구부러진 정도, 2 ~ 5번 - 검지부터 소지까지 접히는 각도
                 print(right_finger_angles[0])
 
-                if right_finger_angles[0] > 10:
+                if right_finger_angles[0] > 20:
                     right_thumb_state = True
                 else:
                     right_thumb_state = False
@@ -488,7 +488,7 @@ class Active_Webcam(QMainWindow):
 
                 # 3. 이외 기능
                 # 3.1 이스터에그 - 뻐큐! (오른손 기준)
-                if not right_pinky_state and not right_ring_state and right_middle_state and not right_index_state:
+                if not right_pinky_state and not right_ring_state and right_middle_state and not right_index_state and not right_thumb_state:
                     if self.Fuck_count == 0:
                         self.Fuck_count += 1  # 클릭 횟수 증가
                         self.text_view.append('기능 : 뻐큐 금지!')
