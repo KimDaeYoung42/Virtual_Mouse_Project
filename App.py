@@ -28,7 +28,8 @@ class App_Control(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi("UI_App.ui", self)  # UI 파일 로드
-        self.setWindowTitle("가상 인터페이스 프로그램 (개발 0705버전)")
+        self.setWindowTitle("가상 인터페이스 프로그램 (개발 0710버전)")
+        self.setGeometry(420, 100, 465, 260)
 
         self.cap = None                             # 웹캠 객체
         self.app_active = Active_Webcam()           # 인스턴스 생성.
