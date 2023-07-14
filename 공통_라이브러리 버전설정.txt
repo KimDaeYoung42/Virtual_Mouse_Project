@@ -14,12 +14,20 @@
 
 7. PyQt5 최신 버전 사용 
 
+--------------
+아직 미정 8. PyInstaller 설치 (exe 변환 ) 
+
 ------------------------------------------
 PyQt  사용?  (프론트엔드 UI 프레임워크)  
-
-uM3G@GiO9^UuVGESraxAPcp3
 
 ---------------------------------------------
 
 cd C:\Users\user\Desktop\Code\UI_Pyqt\venv\Lib\site-packages\QtDesigner 
 
+* ui 파일 -> py 파일화
+pyuic5 a.ui -o a.py
+
+* qrc 파일 -> py 파일화
+pyrcc5 toolbar_icon.qrc -o icon_toolbar.py 
+
+import icon_toolbar
