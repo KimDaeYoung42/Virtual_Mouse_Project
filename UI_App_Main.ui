@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="Icon/toolbar_icon.qrc">
+    <normaloff>:/icon/tap.png</normaloff>:/icon/tap.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QFrame" name="frame_2">
     <property name="geometry">
@@ -56,7 +60,7 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -76,111 +80,40 @@
      <item row="0" column="1">
       <widget class="QPushButton" name="Button_WebCam_Stop">
        <property name="text">
-        <string>웹캠 중단 (임시)</string>
+        <string>가상 인터페이스 중단</string>
        </property>
       </widget>
      </item>
      <item row="0" column="2">
       <widget class="QPushButton" name="Button_Exit">
        <property name="text">
-        <string>EXIT (임시)</string>
+        <string>EXIT (종료)</string>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
       <widget class="QPushButton" name="Button_Network_Start">
        <property name="text">
-        <string>네트워크 기능 실행</string>
+        <string>네트워크 접속</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
       <widget class="QPushButton" name="Button_Network_Stop">
        <property name="text">
-        <string>네트워크 기능 중단</string>
+        <string>네트워크 해제</string>
        </property>
       </widget>
      </item>
      <item row="1" column="2">
-      <widget class="QPushButton" name="Button_Test">
+      <widget class="QPushButton" name="Button_Server_Open">
        <property name="text">
-        <string>임시 버튼</string>
+        <string>서버 구동</string>
        </property>
       </widget>
      </item>
     </layout>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>440</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="autoFillBackground">
-    <bool>false</bool>
-   </property>
-   <widget class="QMenu" name="menu">
-    <property name="title">
-     <string>|</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menu_Setting">
-    <property name="title">
-     <string>Setting</string>
-    </property>
-    <addaction name="actionSetting"/>
-    <addaction name="separator"/>
-    <addaction name="actionHelp"/>
-   </widget>
-   <widget class="QMenu" name="menu_2">
-    <property name="title">
-     <string>|</string>
-    </property>
-    <property name="separatorsCollapsible">
-     <bool>false</bool>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuMouse">
-    <property name="title">
-     <string>Mouse</string>
-    </property>
-    <addaction name="actionMouse_ON"/>
-    <addaction name="actionMouse_OFF"/>
-   </widget>
-   <widget class="QMenu" name="menuKeyboard">
-    <property name="title">
-     <string>Keyboard</string>
-    </property>
-    <addaction name="actionKeyboard_ON"/>
-    <addaction name="actionKeyboard_OFF"/>
-   </widget>
-   <widget class="QMenu" name="menu_3">
-    <property name="title">
-     <string>|</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menu_Exit">
-    <property name="title">
-     <string>Exit</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menu_4">
-    <property name="title">
-     <string>|</string>
-    </property>
-   </widget>
-   <addaction name="menu"/>
-   <addaction name="menu_Setting"/>
-   <addaction name="menu_2"/>
-   <addaction name="menuMouse"/>
-   <addaction name="menuKeyboard"/>
-   <addaction name="menu_3"/>
-   <addaction name="menu_Exit"/>
-   <addaction name="menu_4"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -201,6 +134,7 @@
    <addaction name="separator"/>
    <addaction name="action_Capture"/>
    <addaction name="action_Drawing_Pen"/>
+   <addaction name="action_Notepad"/>
    <addaction name="separator"/>
   </widget>
   <widget class="QToolBar" name="toolBar_2">
@@ -219,6 +153,81 @@
    <addaction name="action_Setting"/>
    <addaction name="action_help"/>
    <addaction name="separator"/>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>440</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>|</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_Exit">
+    <property name="title">
+     <string>Exit</string>
+    </property>
+    <addaction name="actionProgram_Close_2"/>
+   </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>|</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuMap">
+    <property name="title">
+     <string>Map</string>
+    </property>
+    <addaction name="actionNaver_Map"/>
+    <addaction name="actionDaum_Map"/>
+    <addaction name="separator"/>
+    <addaction name="actionGoogle_Map"/>
+   </widget>
+   <widget class="QMenu" name="menu_5">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="acceptDrops">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>|</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>App</string>
+    </property>
+    <addaction name="actionWindow_Capture"/>
+    <addaction name="actionNotepad"/>
+    <addaction name="separator"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menuHelp"/>
+   <addaction name="menuMap"/>
+   <addaction name="menu_4"/>
+   <addaction name="menu_Exit"/>
+   <addaction name="menu_5"/>
   </widget>
   <action name="action_WebCam_Start">
    <property name="checkable">
@@ -390,6 +399,9 @@
    <property name="toolTip">
     <string>키보드</string>
    </property>
+   <property name="statusTip">
+    <string>가상 인터페이스 기능이 활성화되야 가상 키보드 기능을 사용할 수 있습니다.</string>
+   </property>
   </action>
   <action name="action_Mouse">
    <property name="checkable">
@@ -407,6 +419,9 @@
    </property>
    <property name="toolTip">
     <string>마우스</string>
+   </property>
+   <property name="statusTip">
+    <string>가상 인터페이스 기능이 활성화되야 가상 마우스 기능을 사용할 수 있습니다.</string>
    </property>
   </action>
   <action name="actionMouse_ON">
@@ -437,6 +452,65 @@
   <action name="actionHelp">
    <property name="text">
     <string>Help</string>
+   </property>
+  </action>
+  <action name="action_Notepad">
+   <property name="icon">
+    <iconset resource="Icon/toolbar_icon.qrc">
+     <normaloff>:/icon/notepad.png</normaloff>:/icon/notepad.png</iconset>
+   </property>
+   <property name="text">
+    <string>메모장</string>
+   </property>
+   <property name="toolTip">
+    <string>메모장 열기 기능</string>
+   </property>
+   <property name="statusTip">
+    <string>버튼 누를시 메모장 기능이 활성화됩니다.</string>
+   </property>
+  </action>
+  <action name="actionDaum_Map">
+   <property name="text">
+    <string>Daum_Map</string>
+   </property>
+  </action>
+  <action name="actionNaver_Map">
+   <property name="text">
+    <string>Naver_Map</string>
+   </property>
+  </action>
+  <action name="actionGoogle_Map">
+   <property name="text">
+    <string>Google_Map</string>
+   </property>
+  </action>
+  <action name="actionmainw_icon">
+   <property name="icon">
+    <iconset resource="Icon/toolbar_icon.qrc">
+     <normaloff>:/icon/tap.png</normaloff>:/icon/tap.png</iconset>
+   </property>
+   <property name="text">
+    <string>mainw_icon</string>
+   </property>
+  </action>
+  <action name="actionProgram_Close">
+   <property name="text">
+    <string>Program_Close</string>
+   </property>
+  </action>
+  <action name="actionProgram_Close_2">
+   <property name="text">
+    <string>Program_Close</string>
+   </property>
+  </action>
+  <action name="actionWindow_Capture">
+   <property name="text">
+    <string>Window_Capture</string>
+   </property>
+  </action>
+  <action name="actionNotepad">
+   <property name="text">
+    <string>Notepad</string>
    </property>
   </action>
  </widget>

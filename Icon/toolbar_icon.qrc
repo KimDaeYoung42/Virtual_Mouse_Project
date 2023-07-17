@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icon">
+    <file>tap.png</file>
+    <file>notepad.png</file>
     <file>keyboard.png</file>
     <file>help.png</file>
     <file>internet.png</file>
