@@ -35,7 +35,7 @@ class Active_Webcam(QMainWindow):
 
         # UI 관련
         loadUi("UI_App_WebCam (Develop_Mode).ui", self)      # UI 파일 로드
-        self.setWindowTitle("가상 인터페이스 (개발 0714버전)")
+        self.setWindowTitle("가상 인터페이스 (개발 0717버전)")
         self.setGeometry(550, 100, 950, 440)
         self.setMinimumSize(946, 460)
 
