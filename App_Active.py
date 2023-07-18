@@ -2,7 +2,6 @@
 
 import sys
 import subprocess
-import psutil
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import QTimer, Qt
@@ -36,7 +35,7 @@ class Active_Webcam(QMainWindow):
 
         # UI 관련
         loadUi("UI_App_WebCam (Develop_Mode).ui", self)      # UI 파일 로드
-        self.setWindowTitle("가상 인터페이스 (개발 0717버전)")
+        self.setWindowTitle("가상 인터페이스 (개발 0714버전)")
         self.setGeometry(550, 100, 950, 440)
         self.setMinimumSize(946, 460)
 
@@ -308,7 +307,7 @@ class Active_Webcam(QMainWindow):
                     self.Keyboard_count = 0
 
                 # 2.2 마우스 우클릭 이벤트 (검지와 중지만 핀 상태 및 두 손가락의 거리 조건)
-                if not right_pinky_state and not right_ring_state and right_middle_state and right_index_state and right_index_middle_distance < 25:
+                if right_middle_state and right_index_state and right_index_middle_distance and not right_pinky_state and not right_ring_state < 25:
                     if self.Rclick_count == 0:
                         self.Rclick_count += 1  # 클릭 횟수 증가
                         self.mouse_Right_ClickEnvet()
@@ -323,7 +322,7 @@ class Active_Webcam(QMainWindow):
                 distance_bz = math.sqrt((right_thumb_tip[1] - right_index_tip[1]) ** 2 + (right_thumb_tip[2] - right_index_tip[2]) ** 2)
 
                 # 검지, 중지, 소지만 펴고 / 검지와 중지 사이의 거리가 30 이상일 경우 윈도우 확대.
-                if right_pinky_state and not right_ring_state and right_middle_state and right_index_state:
+                if right_pinky_state and right_middle_state and right_index_state and not right_ring_state:
                 # if not right_pinky_state and not right_ring_state and not right_middle_state and right_index_state and right_thumb_state:
                     if right_index_middle_distance >= 30 and self.Window_zoom == 0:
                         self.Window_zoom += 1
@@ -337,38 +336,36 @@ class Active_Webcam(QMainWindow):
                         window.maximize()   # 윈도우 최대화
 
                     # 검지와 중지 사이의 거리가 30 미만일 경우 윈도우 축소.
+                    # 다섯 손가락을 모두 펼쳤을 때 == "Window_Zoom == 0".
+                    # 검지와 중지를 먼저 붙인 상태에서 확대 제스처를 취하면 윈도우가 축소된다.
                     elif right_index_middle_distance < 30 and self.Window_zoom == 0:
                         self.Window_zoom += 1
                         self.text_view.append('기능 : 윈도우 축소 이벤트 발생')
 
                         window = gw.getActiveWindow()
 
-                        # 윈도우의 사이즈를 원래 크기로 재설정.
+                        # 윈도우 사이즈를 원래 크기로 재설정.
                         window = gw.getActiveWindow()
                         window.resizeTo(window_original_width, window_original_height)
 
                     else:
                         self.text_view.append("오류 : 손 펼친 뒤 다시 제스처 취해야 합니다.")
 
-                # 2.4 키보드 기능 화상키보드 켜기 (새끼손가락만 펴기)
+                # 2.4 키보드 기능 화상 키보드 켜기 (새끼손가락만 펴기)
                 if right_pinky_state and not right_index_state and not right_middle_state and not right_ring_state:
                    if self.Keyboard_count == 0:
                        self.Keyboard_count += 1
                        self.keyboard_on_Event()
-                   # else:
-                   #     self.Keyboard_count = 0    # 문제 있음 <- 손을 피지도 않았는데도 Keyboard_count가 바로 0으로 되어버림 (타 제스처엔 두 손가락 거리 기준이 있지만 이 코드는 없어서 오류, 기준 마련해야)
-                   #     self.keyboard_off_Event()
-
 
                 # 3. 이외 기능
-                # 3.1 이스터에그 - 뻐큐! (오른손 기준)
-                if not right_pinky_state and not right_ring_state and right_middle_state and not right_index_state and not right_thumb_state:
+                # 3.1 이스터 에그 - 뻐큐! (오른손 기준)
+                if right_middle_state and not right_pinky_state and not right_ring_state and not right_index_state and not right_thumb_state:
                     if self.Fuck_count == 0:
                         self.Fuck_count += 1  # 클릭 횟수 증가
                         self.text_view.append('기능 : 뻐큐 금지!')
 
-                # 3.2 이스터에그 - 굿! (오른손 기준)
-                if not right_pinky_state and not right_ring_state and not right_middle_state and not right_index_state and right_thumb_state:
+                # 3.2 이스터 에그 - 굿! (오른손 기준)
+                if right_thumb_state and not right_pinky_state and not right_ring_state and not right_middle_state and not right_index_state:
                     if self.Good_count == 0:
                         self.Good_count += 1  # 클릭 횟수 증가
                         self.text_view.append('기능 : 굿 감사합니다')
@@ -448,19 +445,10 @@ class Active_Webcam(QMainWindow):
     # 2.4 키보드 기능 화상키보드 켜기 (새끼손가락만)
     def keyboard_on_Event(self):
         keyboard_process = subprocess.Popen('osk.exe', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        self.text_view.append('기능 : 키보드 실행 이벤트 감지')
+        self.text_view.append('기능 : 키보드 이벤트 감지')
         # 화상 키보드 선행설정 - 옵션 - 화상키보드 사용방식 중 가리켜서 입력 3초 기준
         # notepad_process = subprocess.Popen('notepad.exe', shell=True)
 
         if MouseFunction.active_stop:
             keyboard_process.terminate()    # 화상 키보드 종료
             return
-
-    def keyboard_off_Event(self):
-        self.text_view.append('기능 : 키보드 종료 이벤트 감지')
-        for proc in psutil.process_iter(['pid', 'name']):
-            if proc.info['name'] == 'osk.exe':
-                pid = proc.info['pid']
-                # 프로세스 종료
-                psutil.Process(pid).kill()
-                break
