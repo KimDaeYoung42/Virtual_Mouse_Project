@@ -2,6 +2,7 @@
 
 import sys
 import subprocess
+import psutil 
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import QTimer, Qt
@@ -356,6 +357,10 @@ class Active_Webcam(QMainWindow):
                    if self.Keyboard_count == 0:
                        self.Keyboard_count += 1
                        self.keyboard_on_Event()
+                    # else:
+                   #     self.Keyboard_count = 0    # 문제 있음 <- 손을 피지도 않았는데도 Keyboard_count가 바로 0으로 되어버림 (타 제스처엔 두 손가락 거리 기준이 있지만 이 코드는 없어서 오류, 기준 마련해야)
+                   #     self.keyboard_off_Event()
+
 
                 # 3. 이외 기능
                 # 3.1 이스터 에그 - 뻐큐! (오른손 기준)
@@ -445,10 +450,19 @@ class Active_Webcam(QMainWindow):
     # 2.4 키보드 기능 화상키보드 켜기 (새끼손가락만)
     def keyboard_on_Event(self):
         keyboard_process = subprocess.Popen('osk.exe', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        self.text_view.append('기능 : 키보드 이벤트 감지')
+        self.text_view.append('기능 : 키보드 실행 이벤트 감지')
         # 화상 키보드 선행설정 - 옵션 - 화상키보드 사용방식 중 가리켜서 입력 3초 기준
         # notepad_process = subprocess.Popen('notepad.exe', shell=True)
 
         if MouseFunction.active_stop:
             keyboard_process.terminate()    # 화상 키보드 종료
             return
+
+    def keyboard_off_Event(self):
+        self.text_view.append('기능 : 키보드 종료 이벤트 감지')
+        for proc in psutil.process_iter(['pid', 'name']):
+            if proc.info['name'] == 'osk.exe':
+                pid = proc.info['pid']
+                # 프로세스 종료
+                psutil.Process(pid).kill()
+                break
