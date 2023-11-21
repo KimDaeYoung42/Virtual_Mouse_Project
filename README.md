@@ -5,8 +5,7 @@
 ## 이 프로젝트 코드는 구 코드입니다. 아래 링크의 프로젝트 코드를 확인하십시오.    
 https://github.com/KimDaeYoung42/Virtual_Mouse_Project-Network-Plus    
 
-![image](https://github.com/KimDaeYoung42/Virtual_Mouse_Project/assets/130177839/d558befc-19d4-4c75-8dec-b71e37e1b7e7)
-![서버 파일전송](https://github.com/KimDaeYoung42/Virtual_Mouse_Project/assets/130177839/f8127749-ccea-4e62-8627-07ec41ec210d)
+![서버 파일전송](https://github.com/KimDaeYoung42/Virtual_Mouse_Project/assets/130177839/50b81013-291b-4bff-9cdf-4e947d534118)
 
 
 ------------------------------------
