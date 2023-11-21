@@ -1,42 +1,68 @@
 # Virtual_Mouse_Project
 
 ![image](https://github.com/KimDaeYoung42/Virtual_Mouse_Project/assets/130177839/d558befc-19d4-4c75-8dec-b71e37e1b7e7)
+![서버 파일전송](https://github.com/KimDaeYoung42/Virtual_Mouse_Project/assets/130177839/f8127749-ccea-4e62-8627-07ec41ec210d)
 
 
-## 현재 문제
-좌클릭 중복 입력 문제 (=키보드 입력 문제 동일함 / sleep으로는 안됨)     
-각 마우스&키보드 기능의 제스처 충돌 문제     
+## 공지 
+This project code is old code.       
+Check out the project code on the link below.      
+이 프로젝트 코드는 구 코드입니다. 아래 링크의 프로젝트 코드를 확인하십시오.    
+https://github.com/KimDaeYoung42/Virtual_Mouse_Project-Network-Plus    
 
-양손 인식 및 왼손&오른손 제스처 개별 인식  (우현에몽 ?)     
-
-프로그램 종료 또는 웹캠 종료시 -> 프로그램 종료되는 문제     
-가끔 웹캠 활상화 상태에서 손이 캠 바깥으로 나가면 / 프로그램 종료되는 문제     
-
-프로그램 켜지는 위치 변경 ?? 
 
 ------------------------------------
-## 코드 설명
+## [Project development schedule]    
+● Development Phase 1 : 2023.6.1 ~ 7.14    
+
+## 코드 설명 (Code Description)
 
 ### 1. main.py     
+The starting point of the program     
 프로그램 시작점      
 
-### 2. App.py (UI_App_Main.ui, UI_App_Main.py, icon_toolbar.py 연동)     
+### 2. App.py (UI_App_Main.ui, UI_App_Main.py, icon_toolbar.py interlocking)     
+Main Program (Junction)    
 메인 프로그램 (분기점)      
 
-### 3. App_Active.py (UI_App_WebCam.ui, UI_App_WebCam.py 연동)     
+### 3. App_Active.py (UI_App_WebCam.ui, UI_App_WebCam.py interlocking)     
+Virtual Mouse, Keyboard Gesture Code   
 가상 마우스, 키보드 제스처 코드       
 
 #### 3.1 MouseModule.py     
+Detailed code for each mouse function (modified)    
 각 마우스 기능 (모듈화) 세부 코드       
 
 ### 4. HandTrackingModule.py     
+Hand tracking module code    
 핸드 트래킹 모듈 코드         
 
 ### 5. Network_Con.py     
+Network-related code    
 네트워크 관련 코드 
 
 ### 99. App_Help.py    
+Contact, development team information   
 연락처, 개발팀 정보
+
+ -------------------------------------------
+## Gesture function    
+### Common features / two-handed gestures    
+0. Deactivation event    
+1.1 / 2.1 Mouse Move Event    
+
+### 1. Left hand gesture standards    
+1.2 Left-click related to mouse (No. 1 Left-click / Left-Press (Continue Press)    
+1.3 Left mouse double click event (left click 2)    
+1.4 Mouse Drag and Drop Events    
+1.5 mouse scrolling magnification and reduction events    
+1.5.1 Screen Scroll - Perform a Zoom Operation    
+1.5.2 Scrolling Screen - Performing a Shrinking Operation    
+
+### 2. Based on right hand gestures    
+2.2 Right-click event (1 right-click / right press)    
+2.3 Window zoom event    
+2.4 Keyboard functionality Image keyboard on (puppy fingers only)    
 
  -------------------------------------------
 ## 제스처 기능      
@@ -55,54 +81,4 @@
 ### 2. 오른손 제스처 기준 
 2.2 마우스 우클릭 이벤트 (1번 우클릭 / 우 프레스 (계속 누르는) )     
 2.3 윈도우 창 확대 축소 이벤트     
-2.4 키보드 기능 화상키보드 켜기 (새끼손가락만)     
-
- -------------------------------------------
-## 7월 13일 및 7월 4주차 개발 
-#### 1) 메인 프로그램 정리 (모듈화, UI 개편, 코드 정리 등 / 팀장, 우현씨) 
-#### 2) 모델학습 기반 코드 구현 (우현씨)
-#### 3) 마우스 디버그 및 칠판기능 구현, 지도 사이트 내 테스트 (민석씨 -> 수환씨 변경) 
-#### 4) 네트워크 기능 구현 (하은씨, 민석씨)
-
- -------------------------------------------
-### [ 개발 1-1 단계 ]     
-#### [ 1순위 ] 메인 프로그램 정리 (팀장 / 우현씨)  
-1) UI 개편 작업
-- 칠판 UI 및 네트워크 UI 작업 
-- 칠판 안쓰고 캡처 프로그램 연동하는게 나을지도? 
-
-2) 코드 모듈화 작업
-- 메인 UI 기반      
-
-#### [ 2순위 ] 네트워크 기능 구현 (하은씨 / 민석씨) 
-1) 네트워크 UI 기반 
-- 네트워크 기능 + (클라이언트 / 서버)
-- 제어당하는 PC 화면 보여줘야 한다.
-- 파일 전송 및 이미지 전송 (전송 후 바로 보여주기? / 어벤저스 느낌?) 
-
-#### [ 3순위 ] 마우스 디버그 및 칠판 기능 구현 (수환씨)
-1) 마우스 디버그 : 지도 사이트 내 테스트 
-2) 칠판 기능 구현 (ppt 발표 보조)
-(1) 칠판 기능 : 화면 캡처, 붓&펜, 지우개 등
-(2) ppt 기능 : 발표 때 ppt 페이지 앞&뒤페이지 넘기기 
-3) 추가 디버그 
-- 모니터 보정 작업 및 사각지대 해결 필요 등
-
-------------------------------------------------
-#### [ 4순위 ] 모델학습 기반 코드 구현  (우현씨 / 보류, 양손 기반 문제발생 )     
-목표 : 정확도 향상 작업  / 학습 모델 기반 HandTrackingModule.py 코드 개편작업 
-
-
-#### [ 5순위 ] 사용 편의성 (추후 팀장) <- 목, 금요일 작업 목표! 
-목표 : 사용 편의성 개편 (메뉴 UI 관련)    
-메뉴 기능 수정하기 (UI 그래픽 관련 추가 수정하기 )    
-메뉴 기능 연동 제스처 동작 코드 작성     
-ui 미개발 한 파트 수정하기         
-
-
-------------------------------------------------
-
-------------------------------------------------
-#### 깃허브 마크업 문서 작성하는 방법
-문장 뒤에      3칸 이상 spacebar 들여쓰기 해야      
-다음 줄에 문장을 쓸 수 있음. 안하면 문장 뒤에 문장 바로 붙어서 나옴 
+2.4 키보드 기능 화상키보드 켜기 (새끼손가락만) 
