@@ -62,6 +62,13 @@ Contact, development team information
 2.3 Window zoom event    
 2.4 Keyboard functionality Image keyboard on (puppy fingers only)    
 
+## [Project Collaborator-developer]
+Team leader: https://github.com/KimDaeYoung42   
+Team 1: https://github.com/Woosss99   
+Team 2: https://github.com/Su-hwanKim    
+Team 3: https://github.com/ELUKA123    
+Team 4: https://github.com/minseok4266   
+
  -------------------------------------------
 ## 제스처 기능      
 ### 공통 기능 / 양손 제스처           
@@ -80,3 +87,10 @@ Contact, development team information
 2.2 마우스 우클릭 이벤트 (1번 우클릭 / 우 프레스 (계속 누르는) )     
 2.3 윈도우 창 확대 축소 이벤트     
 2.4 키보드 기능 화상키보드 켜기 (새끼손가락만) 
+
+### [팀 프로젝트 개발자]
+Team leader: https://github.com/KimDaeYoung42   
+Team 1: https://github.com/Woosss99   
+Team 2: https://github.com/Su-hwanKim    
+Team 3: https://github.com/ELUKA123    
+Team 4: https://github.com/minseok4266   
