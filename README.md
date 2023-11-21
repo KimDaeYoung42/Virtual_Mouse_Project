@@ -1,5 +1,8 @@
 # Virtual_Mouse_Project
 
+![image](https://github.com/KimDaeYoung42/Virtual_Mouse_Project/assets/130177839/d558befc-19d4-4c75-8dec-b71e37e1b7e7)
+
+
 ## 현재 문제
 좌클릭 중복 입력 문제 (=키보드 입력 문제 동일함 / sleep으로는 안됨)     
 각 마우스&키보드 기능의 제스처 충돌 문제     
